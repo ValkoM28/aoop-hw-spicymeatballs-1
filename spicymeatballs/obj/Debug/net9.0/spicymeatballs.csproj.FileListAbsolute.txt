@@ -1,0 +1,15 @@
+/home/michal/Documents/unifiles/sem2/AooP/spicymeatballs/spicymeatballs/bin/Debug/net9.0/spicymeatballs
+/home/michal/Documents/unifiles/sem2/AooP/spicymeatballs/spicymeatballs/bin/Debug/net9.0/spicymeatballs.deps.json
+/home/michal/Documents/unifiles/sem2/AooP/spicymeatballs/spicymeatballs/bin/Debug/net9.0/spicymeatballs.runtimeconfig.json
+/home/michal/Documents/unifiles/sem2/AooP/spicymeatballs/spicymeatballs/bin/Debug/net9.0/spicymeatballs.dll
+/home/michal/Documents/unifiles/sem2/AooP/spicymeatballs/spicymeatballs/bin/Debug/net9.0/spicymeatballs.pdb
+/home/michal/Documents/unifiles/sem2/AooP/spicymeatballs/spicymeatballs/obj/Debug/net9.0/spicymeatballs.GeneratedMSBuildEditorConfig.editorconfig
+/home/michal/Documents/unifiles/sem2/AooP/spicymeatballs/spicymeatballs/obj/Debug/net9.0/spicymeatballs.AssemblyInfoInputs.cache
+/home/michal/Documents/unifiles/sem2/AooP/spicymeatballs/spicymeatballs/obj/Debug/net9.0/spicymeatballs.AssemblyInfo.cs
+/home/michal/Documents/unifiles/sem2/AooP/spicymeatballs/spicymeatballs/obj/Debug/net9.0/spicymeatballs.csproj.CoreCompileInputs.cache
+/home/michal/Documents/unifiles/sem2/AooP/spicymeatballs/spicymeatballs/obj/Debug/net9.0/spicymeatballs.sourcelink.json
+/home/michal/Documents/unifiles/sem2/AooP/spicymeatballs/spicymeatballs/obj/Debug/net9.0/spicymeatballs.dll
+/home/michal/Documents/unifiles/sem2/AooP/spicymeatballs/spicymeatballs/obj/Debug/net9.0/refint/spicymeatballs.dll
+/home/michal/Documents/unifiles/sem2/AooP/spicymeatballs/spicymeatballs/obj/Debug/net9.0/spicymeatballs.pdb
+/home/michal/Documents/unifiles/sem2/AooP/spicymeatballs/spicymeatballs/obj/Debug/net9.0/spicymeatballs.genruntimeconfig.cache
+/home/michal/Documents/unifiles/sem2/AooP/spicymeatballs/spicymeatballs/obj/Debug/net9.0/ref/spicymeatballs.dll
