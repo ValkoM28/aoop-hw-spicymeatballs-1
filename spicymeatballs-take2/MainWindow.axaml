@@ -2,8 +2,25 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="500"
+        Height="500" Width="500"
         x:Class="spicymeatballs_take2.MainWindow"
         Title="spicymeatballs_take2">
-    Welcome to Avalonia!
+
+    <Grid RowDefinitions="*,*" ColumnDefinitions="*">
+        <StackPanel Grid.Row="0">
+            <StackPanel Orientation="Horizontal">
+                <Button Name="LoadButton" Content="Load" Click="load"/>
+                <Button Name="SaveButton" Content="Save" Click="SaveFile"/>
+                <Button Content="Flip horizontally" Click=""/>
+                <Button Content="Flip vertically" Click=""/>
+                <TextBox Name="szar"/>
+            </StackPanel>
+            <Border BorderThickness="1" BorderBrush="Black" Margin="0">
+                <Grid Name="ImageGrid"/>
+            </Border>
+        </StackPanel>
+        
+        <Canvas Grid.Row="1" x:Name="Canvas" Background="White" PointerPressed="Press"/> 
+    </Grid>
 </Window>

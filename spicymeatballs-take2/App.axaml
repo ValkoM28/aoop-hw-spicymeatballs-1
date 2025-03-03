@@ -7,4 +7,10 @@
     <Application.Styles>
         <FluentTheme />
     </Application.Styles>
+
+    <!-- <Style Selector="Button:pointerover /template/ Contentpresenter">
+        <Setter Property="Foreground" Value="{}"></Setter>
+        <Setter Property="Background" Value="{}"></Setter>
+    </Style> 
+    -->
 </Application>
