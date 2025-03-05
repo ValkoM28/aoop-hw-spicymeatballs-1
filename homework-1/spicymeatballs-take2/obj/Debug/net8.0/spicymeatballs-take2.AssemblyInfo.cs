@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("spicymeatballs-take2")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0d39d48f991493191483286b573e90f96062ee25")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1dca7fda2a972c8c7a70cb08a06406beac60e93a")]
 [assembly: System.Reflection.AssemblyProductAttribute("spicymeatballs-take2")]
 [assembly: System.Reflection.AssemblyTitleAttribute("spicymeatballs-take2")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
