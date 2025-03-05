@@ -190,75 +190,63 @@ public partial class MainWindow : Window
             Console.WriteLine($"Canvas set with {imageHeight}x{imageWidth} pixels.");
         }
 
-        private bool _isFlippedHorizontally = false;
-        private bool _isFlippedVertically = false;
-
+        
+        // Function to flip the image horizontally
         public void FlipHorizontal(object? sender, RoutedEventArgs e)
         {
-            var children = CanvasMain.Children.OfType<Rectangle>().ToList();
-            CanvasMain.Children.Clear();
-
-            for (int i = 0; i < _height; i++)
+            var imageDataArray = _imageData.ToCharArray();
+            
+            for (int row = 0; row < _height; row++)
             {
-                for (int j = 0; j < _width; j++)
+                // Reverse the order of pixels in each row
+                for (int col = 0; col < _width / 2; col++)
                 {
-                    var rect = children[i * _width + j];
+                    // Swap the left and right pixel in the current row
+                    int leftIndex = row * _width + col;
+                    int rightIndex = row * _width + (_width - col - 1);
 
-                    // If already flipped horizontally, reverse the flip, else flip horizontally
-                    if (_isFlippedHorizontally)
-                    {
-                        // Reverse horizontal flip
-                        Canvas.SetLeft(rect, j * _pixelSize);
-                    }
-                    else
-                    {
-                        // Flip horizontally
-                        Canvas.SetLeft(rect, (_width - 1 - j) * _pixelSize);
-                    }
-
-                    Canvas.SetTop(rect, i * _pixelSize);
-                    CanvasMain.Children.Add(rect);
+                    // Swap pixel values in the image data array
+                    char temp = imageDataArray[leftIndex];
+                    imageDataArray[leftIndex] = imageDataArray[rightIndex];
+                    imageDataArray[rightIndex] = temp;
                 }
             }
 
-            // Toggle the flip state
-            _isFlippedHorizontally = !_isFlippedHorizontally;
-
-            Console.WriteLine(_isFlippedHorizontally ? "Canvas flipped horizontally." : "Canvas flipped back horizontally.");
+            // Update the image data after flipping
+            _imageData = new string(imageDataArray);
+            
+            // Re-render the canvas with the updated flipped data
+            SetCanvas(_height, _width, _imageData);
+            Console.WriteLine("Image flipped horizontally.");
         }
 
+        // Function to flip the image vertically (flip along X-axis)
         public void FlipVertical(object? sender, RoutedEventArgs e)
         {
-            var children = CanvasMain.Children.OfType<Rectangle>().ToList();
-            CanvasMain.Children.Clear();
-
-            for (int i = 0; i < _height; i++)
+            var imageDataArray = _imageData.ToCharArray();
+            
+            for (int col = 0; col < _width; col++)
             {
-                for (int j = 0; j < _width; j++)
+                // Reverse the order of pixels in each column
+                for (int row = 0; row < _height / 2; row++)
                 {
-                    var rect = children[i * _width + j];
+                    // Swap the top and bottom pixel in the current column
+                    int topIndex = row * _width + col;
+                    int bottomIndex = (_height - row - 1) * _width + col;
 
-                    // If already flipped vertically, reverse the flip, else flip vertically
-                    if (_isFlippedVertically)
-                    {
-                        // Reverse vertical flip
-                        Canvas.SetTop(rect, i * _pixelSize);
-                    }
-                    else
-                    {
-                        // Flip vertically
-                        Canvas.SetTop(rect, (_height - 1 - i) * _pixelSize);
-                    }
-
-                    Canvas.SetLeft(rect, j * _pixelSize);
-                    CanvasMain.Children.Add(rect);
+                    // Swap pixel values in the image data array
+                    char temp = imageDataArray[topIndex];
+                    imageDataArray[topIndex] = imageDataArray[bottomIndex];
+                    imageDataArray[bottomIndex] = temp;
                 }
             }
 
-            // Toggle the flip state
-            _isFlippedVertically = !_isFlippedVertically;
-
-            Console.WriteLine(_isFlippedVertically ? "Canvas flipped vertically." : "Canvas flipped back vertically.");
+            // Update the image data after flipping
+            _imageData = new string(imageDataArray);
+            
+            // Re-render the canvas with the updated flipped data
+            SetCanvas(_height, _width, _imageData);
+            Console.WriteLine("Image flipped vertically.");
         }
 
        public void ColorFlip(object? sender, Avalonia.Input.PointerPressedEventArgs e)
@@ -269,18 +257,6 @@ public partial class MainWindow : Window
             // Calculate the pixel's x and y coordinates based on _pixelSize
             int x = (int)(position.Y / _pixelSize);
             int y = (int)(position.X / _pixelSize);
-
-            // If the image is flipped horizontally, adjust the y coordinate
-            if (_isFlippedHorizontally)
-            {
-                y = _width - 1 - y;
-            }
-
-            // If the image is flipped vertically, adjust the x coordinate
-            if (_isFlippedVertically)
-            {
-                x = _height - 1 - x;
-            }
 
             // Check if the clicked position is within bounds of the image
             if (x >= 0 && x < _height && y >= 0 && y < _width)
