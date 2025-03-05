@@ -16,6 +16,7 @@ namespace spicymeatballs_take2;
 public partial class MainWindow : Window
 {
     private IBrush? color = Brushes. Black;
+    private int _pixelSize = 10; // Define pixel size
 
     private int _width;
     private int _height;
@@ -87,9 +88,11 @@ public partial class MainWindow : Window
         {
             CanvasMain.Children.Clear(); // Clear previous content
 
-            int pixelSize = 10; // Define pixel size
-            CanvasMain.Width = imageWidth * pixelSize;
-            CanvasMain.Height = imageHeight * pixelSize;
+            _pixelSize = (int)Math.Min(CanvasMain.Bounds.Width / imageWidth, CanvasMain.Bounds.Height / imageHeight);
+
+
+            CanvasMain.Width = imageWidth * _pixelSize;
+            CanvasMain.Height = imageHeight * _pixelSize;
 
             for (int i = 0; i < imageHeight; i++)
             {
@@ -103,14 +106,14 @@ public partial class MainWindow : Window
                     // Create a rectangle
                     var rect = new Rectangle
                     {
-                        Width = pixelSize,
-                        Height = pixelSize,
+                        Width = _pixelSize,
+                        Height = _pixelSize,
                         Fill = brush
                     };
 
                     // Position it on the canvas
-                    Canvas.SetLeft(rect, j * pixelSize);
-                    Canvas.SetTop(rect, i * pixelSize);
+                    Canvas.SetLeft(rect, j * _pixelSize);
+                    Canvas.SetTop(rect, i * _pixelSize);
 
                     // Add to the canvas
                     CanvasMain.Children.Add(rect);
@@ -119,6 +122,40 @@ public partial class MainWindow : Window
 
             Console.WriteLine($"Canvas set with {imageHeight}x{imageWidth} pixels.");
         }
+
+        public void ColorFlip(object? sender, Avalonia.Input.PointerPressedEventArgs e)
+        {
+            // Get the position of the click relative to the canvas
+            var position = e.GetPosition(CanvasMain);
+
+            // Calculate the pixel's x and y coordinates
+            int x = (int)(position.Y / _pixelSize);  // 10 is the pixel size, adjust accordingly
+            int y = (int)(position.X / _pixelSize);  // 10 is the pixel size, adjust accordingly
+
+            // Check if the clicked position is within bounds of the image
+            if (x >= 0 && x < _height && y >= 0 && y < _width)
+            {
+                // Find the rectangle at the specified position
+                int index = x * _width + y;
+                var rect = CanvasMain.Children.OfType<Rectangle>().ElementAtOrDefault(index);
+
+                if (rect != null)
+                {
+                    // Flip the color
+                    if (rect.Fill == Brushes.Black)
+                    {
+                        rect.Fill = Brushes.White;
+                    }
+                    else if (rect.Fill == Brushes.White)
+                    {
+                        rect.Fill = Brushes.Black;
+                    }
+
+                    Console.WriteLine($"Flipped color at ({x}, {y})");
+                }
+            }
+        }
+
 
         public void TemporaryMessage(object? sender, Avalonia.Input.PointerPressedEventArgs e)
         {
