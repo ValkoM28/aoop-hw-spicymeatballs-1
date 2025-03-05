@@ -61,11 +61,20 @@ public partial class MainWindow : Window
         {
             var topLevel = TopLevel.GetTopLevel(this);
             
-            var load = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
-                {
-                    Title = "Open Text File",
-                    AllowMultiple = false
-                });
+            if (topLevel == null)
+            {
+                Console.WriteLine("Error: Unable to get TopLevel window.");
+                return;
+            }
+
+            var loadFileOptions = new FilePickerOpenOptions
+            {
+                Title = "Open Text File",
+                AllowMultiple = false,
+            };
+
+            
+            var load = await topLevel.StorageProvider.OpenFilePickerAsync(loadFileOptions);
 
             if (load.Count >= 1)
             {
@@ -165,6 +174,8 @@ public partial class MainWindow : Window
         {
             Console.WriteLine("Fuck you");
         }
+        
+        
         /*
         private void Drawing(int x, int y)
         {
@@ -178,40 +189,7 @@ public partial class MainWindow : Window
             Canvas.SetTop(pixel, x*pixelSize);
             Canvas.Children.Add(pixel);
         }   */     
-     private void RenderImageGrid(int width, int height, string pixelData)
-        {
-        ImageGrid.Children.Clear();
-        ImageGrid.ColumnDefinitions.Clear();
-        ImageGrid.RowDefinitions.Clear();
-
-        // Define columns and rows
-        for (int i = 0; i < width; i++)
-            ImageGrid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Star));
-
-        for (int i = 0; i < height; i++)
-            ImageGrid.RowDefinitions.Add(new RowDefinition(GridLength.Star));
-
-        // Populate grid with rectangles
-        for (int row = 0; row < height; row++)
-        {
-            for (int col = 0; col < width; col++)
-            {
-                int index = row * width + col;
-                if (index >= pixelData.Length) break;
-
-                var rect = new Border
-                {
-                    Background = pixelData[index] == '1' ? Brushes.Black : Brushes.White,
-                    BorderBrush = Brushes.Gray,
-                    BorderThickness = new (0.5)
-                };
-
-                Grid.SetRow(rect, row);
-                Grid.SetColumn(rect, col);
-                ImageGrid.Children.Add(rect);
-            }
-        }
-    }
+    
     /*
      private void Press(object? sender, Avalonia.Input.PointerPressedEventArgs e)
     {
@@ -226,20 +204,45 @@ public partial class MainWindow : Window
         }
     } */
     private async void SaveFile(object? sender, RoutedEventArgs e)
+    {
+        var data = CanvasMain.Children.OfType<Rectangle>();
+        string outputString = $"{_height} {_width}\n";
+        foreach (var item in data) 
         {
-            var dialog = new SaveFileDialog { Title = "Save your file" };
-            var result = await dialog.ShowAsync(this);
-        }
-        // Helper function to show a simple message box
-        private async void ShowMessage(string message)
-        {
-            var dialog = new Window
+            if (item.Fill.Equals(Brushes.Black) )
             {
-                Content = new TextBlock { Text = message, HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center, VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center },
-                Width = 250,
-                Height = 100
-            };
-            await dialog.ShowDialog(this);
+                outputString += "1";
+            }
+            else
+            {
+                outputString += "0";
+            }
         }
+
+        Console.WriteLine(outputString);
+        var topLevel = TopLevel.GetTopLevel(this);
+        if (topLevel == null)
+        {
+            Console.WriteLine("Error: Unable to get TopLevel window.");
+            return;
+        }
+
+        var saveFileOptions = new FilePickerSaveOptions
+        {
+            Title = "Save File",
+            SuggestedFileName = "output.b2img.txt",
+            DefaultExtension = "b2img.txt",
+            ShowOverwritePrompt = true
+        };
+
+        var file = await topLevel.StorageProvider.SaveFilePickerAsync(saveFileOptions);
+        if (file != null)
+        {
+            await using var stream = await file.OpenWriteAsync();
+            using var writer = new StreamWriter(stream);
+            await writer.WriteAsync(outputString);
+        }
+    }
+    
 }
 
