@@ -194,6 +194,7 @@ public partial class MainWindow : Window
         // Function to flip the image horizontally
         public void FlipHorizontal(object? sender, RoutedEventArgs e)
         {
+            _imageData = GetImageData();
             var imageDataArray = _imageData.ToCharArray();
             
             for (int row = 0; row < _height; row++)
@@ -223,6 +224,8 @@ public partial class MainWindow : Window
         // Function to flip the image vertically (flip along X-axis)
         public void FlipVertical(object? sender, RoutedEventArgs e)
         {
+
+            _imageData = GetImageData();
             var imageDataArray = _imageData.ToCharArray();
             
             for (int col = 0; col < _width; col++)
@@ -350,6 +353,37 @@ public partial class MainWindow : Window
             await writer.WriteAsync(outputString);
         }
     }
-    
+
+    private string GetImageData()
+    {
+        var data = CanvasMain.Children.OfType<Rectangle>();
+        string dataOutput = "";
+        
+        // Define the color mapping
+        var colorMap = new Dictionary<IBrush, char>
+        {
+            { Brushes.White, '0' }, { Brushes.Black, '1' }, { Brushes.Red, '2' }, { Brushes.Green, '3' },
+            { Brushes.Blue, '4' }, { Brushes.Yellow, '5' }, { Brushes.Purple, '6' }, { Brushes.Orange, '7' },
+            { Brushes.Pink, '8' }, { Brushes.Brown, '9' }, { Brushes.Gray, 'A' }, { Brushes.Cyan, 'B' },
+            { Brushes.Magenta, 'C' }, { Brushes.Lime, 'D' }, { Brushes.Teal, 'E' }, { Brushes.Gold, 'F' }
+        };
+
+        foreach (var item in data) 
+        {
+            var brush = item.Fill;
+            if (colorMap.ContainsKey(brush))
+            {
+                dataOutput += colorMap[brush];
+            }
+            else
+            {
+                dataOutput += '0'; // Default to white if color not found
+            }
+        }
+
+        // Return the image data as a string
+        return dataOutput;
+    }
+        
 }
 
