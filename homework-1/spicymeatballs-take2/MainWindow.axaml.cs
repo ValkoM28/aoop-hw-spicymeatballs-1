@@ -138,30 +138,37 @@ public partial class MainWindow : Window
             var position = e.GetPosition(CanvasMain);
 
             // Calculate the pixel's x and y coordinates
-            int x = (int)(position.Y / _pixelSize);  // 10 is the pixel size, adjust accordingly
-            int y = (int)(position.X / _pixelSize);  // 10 is the pixel size, adjust accordingly
+            int x = (int)(position.Y / _pixelSize);
+            int y = (int)(position.X / _pixelSize);
 
             // Check if the clicked position is within bounds of the image
             if (x >= 0 && x < _height && y >= 0 && y < _width)
             {
-                // Find the rectangle at the specified position
-                int index = x * _width + y;
-                var rect = CanvasMain.Children.OfType<Rectangle>().ElementAtOrDefault(index);
+            // Find the rectangle at the specified position
+            int index = x * _width + y;
+            var rect = CanvasMain.Children.OfType<Rectangle>().ElementAtOrDefault(index);
 
-                if (rect != null)
+            if (rect != null)
+            {
+                // Define the color sequence
+                IBrush[] colors = new IBrush[]
                 {
-                    // Flip the color
-                    if (rect.Fill == Brushes.Black)
-                    {
-                        rect.Fill = Brushes.White;
-                    }
-                    else if (rect.Fill == Brushes.White)
-                    {
-                        rect.Fill = Brushes.Black;
-                    }
+                Brushes.White, Brushes.Black, Brushes.Red, Brushes.Green, Brushes.Blue,
+                Brushes.Yellow, Brushes.Purple, Brushes.Orange, Brushes.Pink, Brushes.Brown,
+                Brushes.Gray, Brushes.Cyan, Brushes.Magenta, Brushes.Lime, Brushes.Teal, Brushes.Gold
+                };
 
-                    Console.WriteLine($"Flipped color at ({x}, {y})");
-                }
+                // Find the current color index
+                int currentIndex = Array.IndexOf(colors, rect.Fill);
+
+                // Calculate the next color index
+                int nextIndex = (currentIndex + 1) % colors.Length;
+
+                // Set the rectangle's fill to the next color
+                rect.Fill = colors[nextIndex];
+
+                Console.WriteLine($"Flipped color at ({x}, {y}) to {colors[nextIndex]}");
+            }
             }
         }
 
