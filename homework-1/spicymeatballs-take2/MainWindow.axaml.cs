@@ -239,39 +239,11 @@ public partial class MainWindow : Window
         {
             Console.WriteLine("Fuck you");
         }
-        
-        
-        /*
-        private void Drawing(int x, int y)
-        {
-            var pixel = new Avalonia.Controls.Shapes.Rectangle()
-            {
-                Width = pixelSize,
-                Height = pixelSize,
-                Fill = image[x, y] == 1? color :Brushes.White,
-            };
-            Canvas.SetLeft(pixel, y*pixelSize);
-            Canvas.SetTop(pixel, x*pixelSize);
-            Canvas.Children.Add(pixel);
-        }   */     
-    
-    /*
-     private void Press(object? sender, Avalonia.Input.PointerPressedEventArgs e)
-    {
-        var position = e.GetPosition(Canvas);
-        int x = (int)(position.Y/ pixelSize);
-        int y = (int)(position.X/ pixelSize);
-
-        if (x >= 0 && x < height && y >= 0 && y < width)
-        {
-            image[x, y] = image[x, y] == 1 ? 0 : 1;
-            Drawing(x, y);
-        }
-    } */
     private async void SaveFile(object? sender, RoutedEventArgs e)
     {
         var data = CanvasMain.Children.OfType<Rectangle>();
         string outputString = $"{_height} {_width}\n";
+        string dataOutput = "";
         
         // Define the color mapping
         var colorMap = new Dictionary<IBrush, char>
@@ -287,15 +259,24 @@ public partial class MainWindow : Window
             var brush = item.Fill;
             if (colorMap.ContainsKey(brush))
             {
-                outputString += colorMap[brush];
+                dataOutput += colorMap[brush];
             }
             else
             {
-                outputString += '0'; // Default to white if color not found
+                dataOutput += '0'; // Default to white if color not found
             }
         }
+        char[] uniqueChars = dataOutput.Distinct().ToArray();
+        string extension;
+        if (uniqueChars.Length == 2)
+        {
+            extension = ".b2img.txt";
+        } else {
+            extension = ".b16img.txt";
+        }
 
-        Console.WriteLine(outputString);
+        outputString += dataOutput;
+        
         var topLevel = TopLevel.GetTopLevel(this);
         if (topLevel == null)
         {
@@ -306,7 +287,7 @@ public partial class MainWindow : Window
         var saveFileOptions = new FilePickerSaveOptions
         {
             Title = "Save File",
-            SuggestedFileName = "output.b2img.txt",
+            SuggestedFileName = "output" + extension,
             DefaultExtension = "b2img.txt",
             ShowOverwritePrompt = true
         };
