@@ -190,126 +190,108 @@ public partial class MainWindow : Window
             Console.WriteLine($"Canvas set with {imageHeight}x{imageWidth} pixels.");
         }
 
-        private bool _isFlippedHorizontally = false;
-        private bool _isFlippedVertically = false;
-
+        
+        // Function to flip the image horizontally
         public void FlipHorizontal(object? sender, RoutedEventArgs e)
         {
-            var children = CanvasMain.Children.OfType<Rectangle>().ToList();
-            CanvasMain.Children.Clear();
-
-            for (int i = 0; i < _height; i++)
+            _imageData = GetImageData();
+            var imageDataArray = _imageData.ToCharArray();
+            
+            for (int row = 0; row < _height; row++)
             {
-                for (int j = 0; j < _width; j++)
+                // Reverse the order of pixels in each row
+                for (int col = 0; col < _width / 2; col++)
                 {
-                    var rect = children[i * _width + j];
+                    // Swap the left and right pixel in the current row
+                    int leftIndex = row * _width + col;
+                    int rightIndex = row * _width + (_width - col - 1);
 
-                    // If already flipped horizontally, reverse the flip, else flip horizontally
-                    if (_isFlippedHorizontally)
-                    {
-                        // Reverse horizontal flip
-                        Canvas.SetLeft(rect, j * _pixelSize);
-                    }
-                    else
-                    {
-                        // Flip horizontally
-                        Canvas.SetLeft(rect, (_width - 1 - j) * _pixelSize);
-                    }
-
-                    Canvas.SetTop(rect, i * _pixelSize);
-                    CanvasMain.Children.Add(rect);
+                    // Swap pixel values in the image data array
+                    char temp = imageDataArray[leftIndex];
+                    imageDataArray[leftIndex] = imageDataArray[rightIndex];
+                    imageDataArray[rightIndex] = temp;
                 }
             }
 
-            // Toggle the flip state
-            _isFlippedHorizontally = !_isFlippedHorizontally;
-
-            Console.WriteLine(_isFlippedHorizontally ? "Canvas flipped horizontally." : "Canvas flipped back horizontally.");
+            // Update the image data after flipping
+            _imageData = new string(imageDataArray);
+            
+            // Re-render the canvas with the updated flipped data
+            SetCanvas(_height, _width, _imageData);
+            Console.WriteLine("Image flipped horizontally.");
         }
 
+        // Function to flip the image vertically (flip along X-axis)
         public void FlipVertical(object? sender, RoutedEventArgs e)
         {
-            var children = CanvasMain.Children.OfType<Rectangle>().ToList();
-            CanvasMain.Children.Clear();
 
-            for (int i = 0; i < _height; i++)
+            _imageData = GetImageData();
+            var imageDataArray = _imageData.ToCharArray();
+            
+            for (int col = 0; col < _width; col++)
             {
-                for (int j = 0; j < _width; j++)
+                // Reverse the order of pixels in each column
+                for (int row = 0; row < _height / 2; row++)
                 {
-                    var rect = children[i * _width + j];
+                    // Swap the top and bottom pixel in the current column
+                    int topIndex = row * _width + col;
+                    int bottomIndex = (_height - row - 1) * _width + col;
 
-                    // If already flipped vertically, reverse the flip, else flip vertically
-                    if (_isFlippedVertically)
-                    {
-                        // Reverse vertical flip
-                        Canvas.SetTop(rect, i * _pixelSize);
-                    }
-                    else
-                    {
-                        // Flip vertically
-                        Canvas.SetTop(rect, (_height - 1 - i) * _pixelSize);
-                    }
-
-                    Canvas.SetLeft(rect, j * _pixelSize);
-                    CanvasMain.Children.Add(rect);
+                    // Swap pixel values in the image data array
+                    char temp = imageDataArray[topIndex];
+                    imageDataArray[topIndex] = imageDataArray[bottomIndex];
+                    imageDataArray[bottomIndex] = temp;
                 }
             }
 
-            // Toggle the flip state
-            _isFlippedVertically = !_isFlippedVertically;
-
-            Console.WriteLine(_isFlippedVertically ? "Canvas flipped vertically." : "Canvas flipped back vertically.");
+            // Update the image data after flipping
+            _imageData = new string(imageDataArray);
+            
+            // Re-render the canvas with the updated flipped data
+            SetCanvas(_height, _width, _imageData);
+            Console.WriteLine("Image flipped vertically.");
         }
 
-        public void ColorFlip(object? sender, Avalonia.Input.PointerPressedEventArgs e)
+       public void ColorFlip(object? sender, Avalonia.Input.PointerPressedEventArgs e)
         {
             // Get the position of the click relative to the canvas
             var position = e.GetPosition(CanvasMain);
 
-            // Calculate the pixel's x and y coordinates
+            // Calculate the pixel's x and y coordinates based on _pixelSize
             int x = (int)(position.Y / _pixelSize);
             int y = (int)(position.X / _pixelSize);
 
             // Check if the clicked position is within bounds of the image
             if (x >= 0 && x < _height && y >= 0 && y < _width)
             {
-            // Find the rectangle at the specified position
-            int index = x * _width + y;
-            var rect = CanvasMain.Children.OfType<Rectangle>().ElementAtOrDefault(index);
+                // Find the rectangle at the corrected position
+                int index = x * _width + y;
+                var rect = CanvasMain.Children.OfType<Rectangle>().ElementAtOrDefault(index);
 
-            if (rect != null)
-            {
-                // Define the color sequence
-                IBrush[] colors = new IBrush[]
+                if (rect != null)
                 {
-                Brushes.White, Brushes.Black, Brushes.Red, Brushes.Green, Brushes.Blue,
-                Brushes.Yellow, Brushes.Purple, Brushes.Orange, Brushes.Pink, Brushes.Brown,
-                Brushes.Gray, Brushes.Cyan, Brushes.Magenta, Brushes.Lime, Brushes.Teal, Brushes.Gold
-                };
+                    // Define the color sequence
+                    IBrush[] colors = new IBrush[]
+                    {
+                        Brushes.White, Brushes.Black, Brushes.Red, Brushes.Green, Brushes.Blue,
+                        Brushes.Yellow, Brushes.Purple, Brushes.Orange, Brushes.Pink, Brushes.Brown,
+                        Brushes.Gray, Brushes.Cyan, Brushes.Magenta, Brushes.Lime, Brushes.Teal, Brushes.Gold
+                    };
 
-                // Find the current color index
-                int currentIndex = Array.IndexOf(colors, rect.Fill);
+                    // Find the current color index
+                    int currentIndex = Array.IndexOf(colors, rect.Fill);
 
-                // Calculate the next color index
-                int nextIndex = (currentIndex + 1) % colors.Length;
+                    // Calculate the next color index
+                    int nextIndex = (currentIndex + 1) % colors.Length;
 
-                // Set the rectangle's fill to the next color
-                rect.Fill = colors[nextIndex];
+                    // Set the rectangle's fill to the next color
+                    rect.Fill = colors[nextIndex];
 
-                Console.WriteLine($"Flipped color at ({x}, {y}) to {colors[nextIndex]}");
+                    Console.WriteLine($"Flipped color at ({x}, {y}) to {colors[nextIndex]}");
+                }
             }
-            }
         }
 
-
-        public void TemporaryMessage(object? sender, Avalonia.Input.PointerPressedEventArgs e)
-        {
-            Console.WriteLine("Fuck you");
-        }
-        public void TemporaryMessage2(object? sender, RoutedEventArgs e)
-        {
-            Console.WriteLine("Fuck you");
-        }
     private async void SaveFile(object? sender, RoutedEventArgs e)
     {
         var data = CanvasMain.Children.OfType<Rectangle>();
@@ -371,6 +353,37 @@ public partial class MainWindow : Window
             await writer.WriteAsync(outputString);
         }
     }
-    
+
+    private string GetImageData()
+    {
+        var data = CanvasMain.Children.OfType<Rectangle>();
+        string dataOutput = "";
+        
+        // Define the color mapping
+        var colorMap = new Dictionary<IBrush, char>
+        {
+            { Brushes.White, '0' }, { Brushes.Black, '1' }, { Brushes.Red, '2' }, { Brushes.Green, '3' },
+            { Brushes.Blue, '4' }, { Brushes.Yellow, '5' }, { Brushes.Purple, '6' }, { Brushes.Orange, '7' },
+            { Brushes.Pink, '8' }, { Brushes.Brown, '9' }, { Brushes.Gray, 'A' }, { Brushes.Cyan, 'B' },
+            { Brushes.Magenta, 'C' }, { Brushes.Lime, 'D' }, { Brushes.Teal, 'E' }, { Brushes.Gold, 'F' }
+        };
+
+        foreach (var item in data) 
+        {
+            var brush = item.Fill;
+            if (colorMap.ContainsKey(brush))
+            {
+                dataOutput += colorMap[brush];
+            }
+            else
+            {
+                dataOutput += '0'; // Default to white if color not found
+            }
+        }
+
+        // Return the image data as a string
+        return dataOutput;
+    }
+        
 }
 
