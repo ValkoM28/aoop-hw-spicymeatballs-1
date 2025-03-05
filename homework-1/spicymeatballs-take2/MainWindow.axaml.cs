@@ -111,8 +111,17 @@ public partial class MainWindow : Window
                 {
                     char pixel = imageData[i * imageWidth + j];
 
-                    // Convert '1' to black and '0' to white
-                    var brush = (pixel == '1') ? Brushes.Black : Brushes.White;
+                    // Define the color mapping
+                    var colorMap = new Dictionary<char, IBrush>
+                    {
+                        { '0', Brushes.White }, { '1', Brushes.Black }, { '2', Brushes.Red }, { '3', Brushes.Green },
+                        { '4', Brushes.Blue }, { '5', Brushes.Yellow }, { '6', Brushes.Purple }, { '7', Brushes.Orange },
+                        { '8', Brushes.Pink }, { '9', Brushes.Brown }, { 'A', Brushes.Gray }, { 'B', Brushes.Cyan },
+                        { 'C', Brushes.Magenta }, { 'D', Brushes.Lime }, { 'E', Brushes.Teal }, { 'F', Brushes.Gold }
+                    };
+
+                    // Get the corresponding brush for the pixel character
+                    var brush = colorMap.ContainsKey(pixel) ? colorMap[pixel] : Brushes.White;
 
                     // Create a rectangle
                     var rect = new Rectangle
