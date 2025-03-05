@@ -13,8 +13,8 @@
             <StackPanel Orientation="Horizontal">
                 <Button Name="LoadButton" Content="Load" Click="LoadImage"/>
                 <Button Name="SaveButton" Content="Save" Click="SaveFile"/>
-                <Button Content="Flip horizontally" Click="TemporaryMessage2"/>
-                <Button Content="Flip vertically" Click="TemporaryMessage2"/>
+                <Button Content="Flip horizontally" Click="FlipHorizontal"/>
+                <Button Content="Flip vertically" Click="FlipVertical"/>
             </StackPanel>
             <Border BorderThickness="1" BorderBrush="Black" Margin="0">
                 <Grid Name="ImageGrid"/>

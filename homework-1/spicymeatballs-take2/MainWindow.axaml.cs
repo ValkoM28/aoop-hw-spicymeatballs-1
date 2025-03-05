@@ -190,6 +190,77 @@ public partial class MainWindow : Window
             Console.WriteLine($"Canvas set with {imageHeight}x{imageWidth} pixels.");
         }
 
+        private bool _isFlippedHorizontally = false;
+        private bool _isFlippedVertically = false;
+
+        public void FlipHorizontal(object? sender, RoutedEventArgs e)
+        {
+            var children = CanvasMain.Children.OfType<Rectangle>().ToList();
+            CanvasMain.Children.Clear();
+
+            for (int i = 0; i < _height; i++)
+            {
+                for (int j = 0; j < _width; j++)
+                {
+                    var rect = children[i * _width + j];
+
+                    // If already flipped horizontally, reverse the flip, else flip horizontally
+                    if (_isFlippedHorizontally)
+                    {
+                        // Reverse horizontal flip
+                        Canvas.SetLeft(rect, j * _pixelSize);
+                    }
+                    else
+                    {
+                        // Flip horizontally
+                        Canvas.SetLeft(rect, (_width - 1 - j) * _pixelSize);
+                    }
+
+                    Canvas.SetTop(rect, i * _pixelSize);
+                    CanvasMain.Children.Add(rect);
+                }
+            }
+
+            // Toggle the flip state
+            _isFlippedHorizontally = !_isFlippedHorizontally;
+
+            Console.WriteLine(_isFlippedHorizontally ? "Canvas flipped horizontally." : "Canvas flipped back horizontally.");
+        }
+
+        public void FlipVertical(object? sender, RoutedEventArgs e)
+        {
+            var children = CanvasMain.Children.OfType<Rectangle>().ToList();
+            CanvasMain.Children.Clear();
+
+            for (int i = 0; i < _height; i++)
+            {
+                for (int j = 0; j < _width; j++)
+                {
+                    var rect = children[i * _width + j];
+
+                    // If already flipped vertically, reverse the flip, else flip vertically
+                    if (_isFlippedVertically)
+                    {
+                        // Reverse vertical flip
+                        Canvas.SetTop(rect, i * _pixelSize);
+                    }
+                    else
+                    {
+                        // Flip vertically
+                        Canvas.SetTop(rect, (_height - 1 - i) * _pixelSize);
+                    }
+
+                    Canvas.SetLeft(rect, j * _pixelSize);
+                    CanvasMain.Children.Add(rect);
+                }
+            }
+
+            // Toggle the flip state
+            _isFlippedVertically = !_isFlippedVertically;
+
+            Console.WriteLine(_isFlippedVertically ? "Canvas flipped vertically." : "Canvas flipped back vertically.");
+        }
+
         public void ColorFlip(object? sender, Avalonia.Input.PointerPressedEventArgs e)
         {
             // Get the position of the click relative to the canvas
