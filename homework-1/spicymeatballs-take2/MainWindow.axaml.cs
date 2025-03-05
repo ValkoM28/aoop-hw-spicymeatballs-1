@@ -5,12 +5,15 @@ using Avalonia.Layout;
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Platform.Storage;
 using Avalonia.Controls.Shapes;
 using Avalonia.Controls;
 using Avalonia.Media;
+using Path = System.IO.Path;
+
 namespace spicymeatballs_take2;
 
 public partial class MainWindow : Window
@@ -36,6 +39,7 @@ public partial class MainWindow : Window
             _width = int.Parse(temp[1]);
             
             _imageData = value[1]; 
+            
             if (_imageData.Length != _height * _width)
             {
                 throw new Exception("not matching width and height to pixel count");
@@ -44,6 +48,7 @@ public partial class MainWindow : Window
             {
                 throw new Exception("error, not enough info");
             }
+            
             
             SetCanvas(_height, _width, _imageData); 
             
@@ -78,19 +83,61 @@ public partial class MainWindow : Window
 
             if (load.Count >= 1)
             {
+                string filePath = load[0].Path.AbsoluteUri;
                 // Open reading stream from the first file.
                 await using var stream = await load[0].OpenReadAsync();
                 using var streamReader = new StreamReader(stream);
+
+                
                 // Reads all the content of file as a text.
-                var fileContent = await streamReader.ReadToEndAsync();
+                string fileContent = await streamReader.ReadToEndAsync();
                 string[] data = fileContent.Split('\n');
+
                 this.ImageData = data;
                 Console.WriteLine("data loaded");
                 Console.WriteLine(data[0] + " " + data[1]);
-                
-                //TODO: add type checking
+                if (IsValid(data, filePath))
+                {
+                    Console.WriteLine("Data is valid");
+                }
+                else
+                {
+                    Console.WriteLine("Data is not valid");
+                }
             }
             
+        }
+
+        private bool IsValid(string[] data, string filePath)
+        {
+            if (filePath.EndsWith(".b2img.txt"))
+            {
+                string allowedCharacters = "01";
+                foreach (char c in data[1])
+                {
+                    if (!allowedCharacters.Contains(c))
+                    {
+                        return false;
+                    }
+                }
+            } else if (filePath.EndsWith(".b16img.txt"))
+            {
+                string allowedCharacters = "0123456789abcdef";
+                foreach (char c in data[1])
+                {
+                    if (!allowedCharacters.Contains(c))
+                    {
+                        return false;
+                    }
+                }
+            }
+            else
+            {
+                throw new Exception("error, wrong file extension");
+            }
+
+            Console.WriteLine($"Data is valid { filePath }");
+            return true; 
         }
 
         public void SetCanvas(int imageHeight, int imageWidth, string imageData)
