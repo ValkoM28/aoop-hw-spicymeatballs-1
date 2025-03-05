@@ -8,14 +8,46 @@ using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Platform.Storage;
+using Avalonia.Controls.Shapes;
+using Avalonia.Controls;
+using Avalonia.Media;
 namespace spicymeatballs_take2;
 
 public partial class MainWindow : Window
 {
     private IBrush? color = Brushes. Black;
-    private int width, height;
-    private int [,]image;
-    private int pixelSize;
+
+    private int _width;
+    private int _height;
+    private string _imageData;
+    
+    public string[] ImageData
+    {
+        get
+        {
+            return new string[] { _height + " " + _width, _imageData };  //TODO: needs a rework, do not use
+        }
+        
+        set
+        {
+            string[] temp = value[0].Split(" "); 
+            _height = int.Parse(temp[0]);
+            _width = int.Parse(temp[1]);
+            
+            _imageData = value[1]; 
+            if (_imageData.Length != _height * _width)
+            {
+                throw new Exception("not matching width and height to pixel count");
+            }
+            if (_height < 2 || _width < 2)
+            {
+                throw new Exception("error, not enough info");
+            }
+            
+            SetCanvas(_height, _width, _imageData); 
+            
+        }
+    }
 
     
     public MainWindow()
@@ -24,7 +56,7 @@ public partial class MainWindow : Window
     }
     
     // Function for Load Button
-      private async void load(object? sender, RoutedEventArgs e)
+      private async void LoadImage(object? sender, RoutedEventArgs e)
         {
             var topLevel = TopLevel.GetTopLevel(this);
             
@@ -41,44 +73,62 @@ public partial class MainWindow : Window
                 using var streamReader = new StreamReader(stream);
                 // Reads all the content of file as a text.
                 var fileContent = await streamReader.ReadToEndAsync();
-                string[] data = fileContent.Split(' ');
-                SetCanvas(data);
+                string[] data = fileContent.Split('\n');
+                this.ImageData = data;
+                Console.WriteLine("data loaded");
+                Console.WriteLine(data[0] + " " + data[1]);
+                
+                //TODO: add type checking
             }
+            
         }
-        public void SetCanvas(string[] lines)
+
+        public void SetCanvas(int imageHeight, int imageWidth, string imageData)
         {
-           /* if  (lines.Length < 2)
-            {
-                throw new Exception("error, not enough info");
-            }
-            string[] size = lines[0].Split(' ');
-            if (size.Length < 2)
-            {
-                throw new Exception("error, no height or width");
-            }
-            if (!int.TryParse(size[0],out width)||!int.TryParse(size[1],out height) || width < 1 || height < 1)
-            {
-                throw new Exception("You suck");
-            } */
+            CanvasMain.Children.Clear(); // Clear previous content
 
-            Canvas.Children.Clear();
-            Canvas.Height = height *pixelSize;
-            Canvas.Width = Width * pixelSize;
-            image = new int[height, width];
+            int pixelSize = 10; // Define pixel size
+            CanvasMain.Width = imageWidth * pixelSize;
+            CanvasMain.Height = imageHeight * pixelSize;
 
-            for (int row =0, lineIndex = 1; row< height && lineIndex < lines.Length; row++, lineIndex++)
+            for (int i = 0; i < imageHeight; i++)
             {
-                string line =lines[lineIndex].Replace("","");
-                if (line.Length != width) continue;
-
-                for(int col = 0; col < width;col++)
+                for (int j = 0; j < imageWidth; j++)
                 {
-                    image[row, col] = line[col] =='1'? 1 : 0;
-                    Drawing(row, col);
+                    char pixel = imageData[i * imageWidth + j];
+
+                    // Convert '1' to black and '0' to white
+                    var brush = (pixel == '1') ? Brushes.Black : Brushes.White;
+
+                    // Create a rectangle
+                    var rect = new Rectangle
+                    {
+                        Width = pixelSize,
+                        Height = pixelSize,
+                        Fill = brush
+                    };
+
+                    // Position it on the canvas
+                    Canvas.SetLeft(rect, j * pixelSize);
+                    Canvas.SetTop(rect, i * pixelSize);
+
+                    // Add to the canvas
+                    CanvasMain.Children.Add(rect);
                 }
             }
-        } 
 
+            Console.WriteLine($"Canvas set with {imageHeight}x{imageWidth} pixels.");
+        }
+
+        public void TemporaryMessage(object? sender, Avalonia.Input.PointerPressedEventArgs e)
+        {
+            Console.WriteLine("Fuck you");
+        }
+        public void TemporaryMessage2(object? sender, RoutedEventArgs e)
+        {
+            Console.WriteLine("Fuck you");
+        }
+        /*
         private void Drawing(int x, int y)
         {
             var pixel = new Avalonia.Controls.Shapes.Rectangle()
@@ -90,9 +140,9 @@ public partial class MainWindow : Window
             Canvas.SetLeft(pixel, y*pixelSize);
             Canvas.SetTop(pixel, x*pixelSize);
             Canvas.Children.Add(pixel);
-        }        
+        }   */     
      private void RenderImageGrid(int width, int height, string pixelData)
-    {
+        {
         ImageGrid.Children.Clear();
         ImageGrid.ColumnDefinitions.Clear();
         ImageGrid.RowDefinitions.Clear();
@@ -125,7 +175,8 @@ public partial class MainWindow : Window
             }
         }
     }
-    private void Press(object? sender, Avalonia.Input.PointerPressedEventArgs e)
+    /*
+     private void Press(object? sender, Avalonia.Input.PointerPressedEventArgs e)
     {
         var position = e.GetPosition(Canvas);
         int x = (int)(position.Y/ pixelSize);
@@ -136,7 +187,7 @@ public partial class MainWindow : Window
             image[x, y] = image[x, y] == 1 ? 0 : 1;
             Drawing(x, y);
         }
-    }
+    } */
     private async void SaveFile(object? sender, RoutedEventArgs e)
         {
             var dialog = new SaveFileDialog { Title = "Save your file" };
