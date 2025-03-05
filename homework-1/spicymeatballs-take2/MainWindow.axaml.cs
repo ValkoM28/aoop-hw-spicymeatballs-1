@@ -21,8 +21,10 @@ namespace spicymeatballs_take2;
 public partial class MainWindow : Window
 {
     private IBrush? color = Brushes. Black;
-    private int _pixelSize = 10; // Define pixel size
-
+    private const int DefaultPixelSize = 10;
+    
+    
+    private int _pixelSize = DefaultPixelSize;
     private int _width;
     private int _height;
     private string _imageData;
@@ -36,23 +38,37 @@ public partial class MainWindow : Window
         
         set
         {
-            string[] temp = value[0].Split(" "); 
-            _height = int.Parse(temp[0]);
-            _width = int.Parse(temp[1]);
-            
+            try
+            {
+                string[] temp = value[0].Split(" ");
+                _height = Int32.Parse(temp[0]);
+                _width = Int32.Parse(temp[1]);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error: Invalid image dimensions setup. ");
+                return;
+            }
             _imageData = value[1]; 
             
             if (_imageData.Length != _height * _width)
             {
-                throw new Exception("not matching width and height to pixel count");
+                Console.WriteLine("Error: Number of pixels does not match the image dimensions.");
+                return;
             }
             if (_height < 2 || _width < 2)
             {
-                throw new Exception("error, not enough info");
+                Console.WriteLine("Error: Invalid image dimensions or data. ");
+                return;
+            }
+
+            if (_imageData == null)
+            {
+                _imageData = new string('0', _height * _width); //fallback to a blank image, if no data is provided
             }
             
             
-            SetCanvas(_height, _width, _imageData); 
+            SetCanvas(_height, _width, _imageData); // Set the canvas with the image data
             
         }
     }
@@ -66,26 +82,33 @@ public partial class MainWindow : Window
     // Function for Load Button
       private async void LoadImage(object? sender, RoutedEventArgs e)
         {
-            var topLevel = TopLevel.GetTopLevel(this);
-            
-            if (topLevel == null)
+            try
             {
-                Console.WriteLine("Error: Unable to get TopLevel window.");
-                return;
-            }
+                var topLevel = TopLevel.GetTopLevel(this);
+                
+                if (topLevel == null)
+                {
+                    Console.WriteLine("Error: Unable to get the explorer window.");
+                    return;
+                }
 
-            var loadFileOptions = new FilePickerOpenOptions
-            {
-                Title = "Open Text File",
-                AllowMultiple = false,
-            };
+                var loadFileOptions = new FilePickerOpenOptions
+                {
+                    Title = "Open a File",
+                    AllowMultiple = false,
+                };
 
-            
-            var load = await topLevel.StorageProvider.OpenFilePickerAsync(loadFileOptions);
-
-            if (load.Count >= 1)
-            {
-                string filePath = load[0].Path.AbsoluteUri;
+                
+                var load = await topLevel.StorageProvider.OpenFilePickerAsync(loadFileOptions);
+                
+                if (load.Count == 0)
+                {
+                    Console.WriteLine("No file selected.");
+                    return;
+                }
+        
+                string filePath = load[0].Path.LocalPath;
+                
                 // Open reading stream from the first file.
                 await using var stream = await load[0].OpenReadAsync();
                 using var streamReader = new StreamReader(stream);
@@ -94,52 +117,67 @@ public partial class MainWindow : Window
                 // Reads all the content of file as a text.
                 string fileContent = await streamReader.ReadToEndAsync();
                 string[] data = fileContent.Split('\n');
+                
+
+                if (!FileContentCheck(data, filePath))
+                {
+                    Console.WriteLine("Error: File format incorrect, invalid data.");
+                    return;
+                }
 
                 this.ImageData = data;
+                
                 Console.WriteLine("data loaded");
                 Console.WriteLine(data[0] + " " + data[1]);
-                if (IsValid(data, filePath))
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error Caught: " + ex.Message);
+            }
+        }
+
+        private bool FileContentCheck(string[] data, string filePath)
+        {        
+            try {
+                if (data.Length < 2)
                 {
-                    Console.WriteLine("Data is valid");
+                    Console.WriteLine("Error: missing data.");
+                    return false;
+                }
+                if (filePath.EndsWith(".b2img.txt"))
+                {
+                    string allowedCharacters = "01";
+                    foreach (char c in data[1])
+                    {
+                        if (!allowedCharacters.Contains(c))
+                        {
+                            return false;
+                        }
+                    }
+                } else if (filePath.EndsWith(".b16img.txt"))
+                {
+                    foreach (char c in data[1])
+                    {
+                        if (!Uri.IsHexDigit(c))
+                        {
+                            return false;
+                        }
+                    }
                 }
                 else
                 {
-                    Console.WriteLine("Data is not valid");
+                    Console.WriteLine("Error: Unsupported file extension.");
+                    return false;
                 }
-            }
-            
-        }
 
-        private bool IsValid(string[] data, string filePath)
-        {
-            if (filePath.EndsWith(".b2img.txt"))
-            {
-                string allowedCharacters = "01";
-                foreach (char c in data[1])
-                {
-                    if (!allowedCharacters.Contains(c))
-                    {
-                        return false;
-                    }
-                }
-            } else if (filePath.EndsWith(".b16img.txt"))
-            {
-                string allowedCharacters = "0123456789abcdef";
-                foreach (char c in data[1])
-                {
-                    if (!allowedCharacters.Contains(c))
-                    {
-                        return false;
-                    }
-                }
+                Console.WriteLine($"Data is valid { filePath }");
+                return true; 
             }
-            else
+            catch (Exception ex)
             {
-                throw new Exception("error, wrong file extension");
+                Console.WriteLine("Error Caught: " + ex.Message);
+                return false;
             }
-
-            Console.WriteLine($"Data is valid { filePath }");
-            return true; 
         }
 
         public void SetCanvas(int imageHeight, int imageWidth, string imageData)
@@ -239,38 +277,18 @@ public partial class MainWindow : Window
         {
             Console.WriteLine("Fuck you");
         }
+            
         
-        
-        /*
-        private void Drawing(int x, int y)
-        {
-            var pixel = new Avalonia.Controls.Shapes.Rectangle()
-            {
-                Width = pixelSize,
-                Height = pixelSize,
-                Fill = image[x, y] == 1? color :Brushes.White,
-            };
-            Canvas.SetLeft(pixel, y*pixelSize);
-            Canvas.SetTop(pixel, x*pixelSize);
-            Canvas.Children.Add(pixel);
-        }   */     
-    
-    /*
-     private void Press(object? sender, Avalonia.Input.PointerPressedEventArgs e)
-    {
-        var position = e.GetPosition(Canvas);
-        int x = (int)(position.Y/ pixelSize);
-        int y = (int)(position.X/ pixelSize);
 
-        if (x >= 0 && x < height && y >= 0 && y < width)
-        {
-            image[x, y] = image[x, y] == 1 ? 0 : 1;
-            Drawing(x, y);
-        }
-    } */
     private async void SaveFile(object? sender, RoutedEventArgs e)
     {
+        
         var data = CanvasMain.Children.OfType<Rectangle>();
+        if (!data.Any())
+        {
+            Console.WriteLine("Error: No image data to save.");
+            return;
+        }
         string outputString = $"{_height} {_width}\n";
         
         // Define the color mapping
@@ -282,20 +300,32 @@ public partial class MainWindow : Window
             { Brushes.Magenta, 'C' }, { Brushes.Lime, 'D' }, { Brushes.Teal, 'E' }, { Brushes.Gold, 'F' }
         };
 
+        string colorString = "";
+        string fileExtension; 
         foreach (var item in data) 
         {
             var brush = item.Fill;
             if (colorMap.ContainsKey(brush))
             {
-                outputString += colorMap[brush];
+                colorString += colorMap[brush];
             }
             else
             {
-                outputString += '0'; // Default to white if color not found
+                colorString += '0'; // Default to white if color not found
             }
         }
+        
+        if (colorString.Distinct().ToArray().SequenceEqual(new[] { '0', '1' })  || colorString.Distinct().ToArray().SequenceEqual(new[] { '1', '0' }))
+        {
+            fileExtension  = ".b2img.txt";
+        }
+        else
+        {
+            fileExtension  = ".b16img.txt";
+        }
+        
+        outputString += colorString;
 
-        Console.WriteLine(outputString);
         var topLevel = TopLevel.GetTopLevel(this);
         if (topLevel == null)
         {
@@ -306,7 +336,7 @@ public partial class MainWindow : Window
         var saveFileOptions = new FilePickerSaveOptions
         {
             Title = "Save File",
-            SuggestedFileName = "output.b2img.txt",
+            SuggestedFileName = "output" + fileExtension,
             DefaultExtension = "b2img.txt",
             ShowOverwritePrompt = true
         };
