@@ -11,6 +11,8 @@ using Avalonia.Platform.Storage;
 using Avalonia.Controls.Shapes;
 using Avalonia.Controls;
 using Avalonia.Media;
+using System.Collections.Generic;
+
 namespace spicymeatballs_take2;
 
 public partial class MainWindow : Window
@@ -214,15 +216,26 @@ public partial class MainWindow : Window
     {
         var data = CanvasMain.Children.OfType<Rectangle>();
         string outputString = $"{_height} {_width}\n";
+        
+        // Define the color mapping
+        var colorMap = new Dictionary<IBrush, char>
+        {
+            { Brushes.White, '0' }, { Brushes.Black, '1' }, { Brushes.Red, '2' }, { Brushes.Green, '3' },
+            { Brushes.Blue, '4' }, { Brushes.Yellow, '5' }, { Brushes.Purple, '6' }, { Brushes.Orange, '7' },
+            { Brushes.Pink, '8' }, { Brushes.Brown, '9' }, { Brushes.Gray, 'A' }, { Brushes.Cyan, 'B' },
+            { Brushes.Magenta, 'C' }, { Brushes.Lime, 'D' }, { Brushes.Teal, 'E' }, { Brushes.Gold, 'F' }
+        };
+
         foreach (var item in data) 
         {
-            if (item.Fill.Equals(Brushes.Black) )
+            var brush = item.Fill;
+            if (colorMap.ContainsKey(brush))
             {
-                outputString += "1";
+                outputString += colorMap[brush];
             }
             else
             {
-                outputString += "0";
+                outputString += '0'; // Default to white if color not found
             }
         }
 
