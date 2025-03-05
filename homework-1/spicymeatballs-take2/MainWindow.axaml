@@ -5,22 +5,22 @@
         mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="500"
         Height="500" Width="500"
         x:Class="spicymeatballs_take2.MainWindow"
-        Title="spicymeatballs_take2">
+        Title="Spicy Meatballs"
+        Background="LightBlue">
 
-    <Grid RowDefinitions="*,*" ColumnDefinitions="*">
+    <Grid RowDefinitions="Auto,*" ColumnDefinitions="*">
         <StackPanel Grid.Row="0">
             <StackPanel Orientation="Horizontal">
-                <Button Name="LoadButton" Content="Load" Click="load"/>
+                <Button Name="LoadButton" Content="Load" Click="LoadImage"/>
                 <Button Name="SaveButton" Content="Save" Click="SaveFile"/>
-                <Button Content="Flip horizontally" Click=""/>
-                <Button Content="Flip vertically" Click=""/>
-                <TextBox Name="szar"/>
+                <Button Content="Flip horizontally" Click="TemporaryMessage2"/>
+                <Button Content="Flip vertically" Click="TemporaryMessage2"/>
             </StackPanel>
             <Border BorderThickness="1" BorderBrush="Black" Margin="0">
                 <Grid Name="ImageGrid"/>
             </Border>
         </StackPanel>
         
-        <Canvas Grid.Row="1" x:Name="Canvas" Background="White" PointerPressed="Press"/> 
+        <Canvas Grid.Row="1" x:Name="CanvasMain" Background="White" PointerPressed="TemporaryMessage"/> 
     </Grid>
 </Window>
