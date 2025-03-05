@@ -289,15 +289,6 @@ public partial class MainWindow : Window
             }
         }
 
-
-        public void TemporaryMessage(object? sender, Avalonia.Input.PointerPressedEventArgs e)
-        {
-            Console.WriteLine("Fuck you");
-        }
-        public void TemporaryMessage2(object? sender, RoutedEventArgs e)
-        {
-            Console.WriteLine("Fuck you");
-        }
     private async void SaveFile(object? sender, RoutedEventArgs e)
     {
         var data = CanvasMain.Children.OfType<Rectangle>();
