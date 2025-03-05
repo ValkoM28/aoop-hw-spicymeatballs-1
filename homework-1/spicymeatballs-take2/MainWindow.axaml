@@ -6,7 +6,7 @@
         Height="500" Width="500"
         x:Class="spicymeatballs_take2.MainWindow"
         Title="Spicy Meatballs"
-        Background="LightBlue">
+        Background="Gray">
 
     <Grid RowDefinitions="Auto,*" ColumnDefinitions="*">
         <StackPanel Grid.Row="0">
@@ -21,6 +21,6 @@
             </Border>
         </StackPanel>
         
-        <Canvas Grid.Row="1" x:Name="CanvasMain" Background="White" PointerPressed="TemporaryMessage"/> 
+        <Canvas Grid.Row="1" Margin="20" x:Name="CanvasMain" Background="White" PointerPressed="ColorFlip"/> 
     </Grid>
 </Window>
