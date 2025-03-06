@@ -27,6 +27,23 @@
 ```
 
 
+### Incorrect file examples
+- black and white
+- (size does not match the code)
+```txt
+6 15
+010001110000000000010001000010000011111110010001000000000000000000000010000010111110
+```
+
+- 16 colors
+- (character 'Z' is present)
+```txt
+6 14
+Z2000100110000101D144Z2032002122145422211011212215102010020000201212001200012022211Z
+```
+
+
+
 ## SaveFile(object? sender, RoutedEventArgs e)
 ### Saves the current image data to a file.
 - Determines the appropriate file extension.
