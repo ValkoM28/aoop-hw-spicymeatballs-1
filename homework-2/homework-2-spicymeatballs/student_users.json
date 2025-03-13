@@ -1,0 +1,27 @@
+[
+  {
+    "Id": 0, 
+    "Username": "gamerstudent@student.uni.edu", 
+    "DefinitelyNotPasswordHash": "templatepasswordhash", 
+    "Name": "Gamer",
+    "Surname": "Student",
+    "EnrolledSubjects": [0, 1, 2]
+  },
+  {
+    "Id": 1,
+    "Username": "startupstudent@student.uni.edu",
+    "DefinitelyNotPasswordHash": "templatepasswordhash",
+    "Name": "Startup",
+    "Surname": "Student",
+    "EnrolledSubjects": [0, 1, 2]
+  },
+  
+  {
+    "Id": 2,
+    "Username": "layzstudent@student.uni.edu",
+    "DefinitelyNotPasswordHash": "templatepasswordhash",
+    "Name": "Lazy",
+    "Surname": "Student",
+    "EnrolledSubjects": [0, 1, 2]
+  }
+]
