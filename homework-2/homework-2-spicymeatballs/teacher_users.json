@@ -9,10 +9,10 @@
   },
   {
     "Id": 1,
-    "Username": "maxkaos@teacher.uni.edu",
+    "Username": "ironman@teacher.uni.edu",
     "DefinitelyNotPasswordHash": "templatepasswordhash",
-    "Name": "Maximus",
-    "Surname": "Kaos",
+    "Name": "iron",
+    "Surname": "man",
     "TeachingSubjects": [1]
   },
   {

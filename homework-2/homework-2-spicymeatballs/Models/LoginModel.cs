@@ -5,16 +5,25 @@ namespace homework_2_spicymeatballs.Models;
 
 public class LoginModel
 {
-   private List<IAccount> _accounts; 
+   private List<IAccount> _accounts;
+
+   public List<IAccount> Accounts
+   {
+      get => _accounts;
+      set { _accounts = value;  }
+   }
+
    
    public LoginModel()
    {
-      _accounts = AccountLoader.LoadAccounts(); 
+      Accounts = AccountLoader.LoadAccounts();
    }
+   
+   
 
    public bool ValidateUser(string username, string password)
    {
-      return _accounts.Exists(user =>
+      return Accounts.Exists(user =>
          user.Username == username && user.DefinitelyNotPasswordHash == Hasher.Hashed(password)); 
    }
 }
