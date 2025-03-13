@@ -7,5 +7,7 @@ public interface IAccount
     string DefinitelyNotPasswordHash { get; set; }
     string Name { get; set; }
     string Surname { get; set; }
-    
+
+    string ToString(); 
+
 }

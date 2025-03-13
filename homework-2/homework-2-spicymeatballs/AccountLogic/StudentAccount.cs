@@ -11,4 +11,9 @@ public class StudentAccount : IAccount
     public string Name { get; set; }
     public string Surname { get; set; }
     public List<int> EnrolledSubjects { get; set; }
+
+    public override string ToString()
+    {
+        return Id+" "+Username+" "+ DefinitelyNotPasswordHash+" "+Name+" "+Surname;
+    }
 }

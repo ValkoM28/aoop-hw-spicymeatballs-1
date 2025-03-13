@@ -11,4 +11,8 @@ public class TeacherAccount : IAccount
     public string Surname { get; set; }
     public List<int> TeachingSubjects { get; set; }
     
+    public override string ToString()
+    {
+        return Id+" "+Username+" "+ DefinitelyNotPasswordHash+" "+Name+" "+Surname;
+    }
 }
