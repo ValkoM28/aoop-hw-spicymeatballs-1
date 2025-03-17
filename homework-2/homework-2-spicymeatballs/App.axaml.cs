@@ -4,6 +4,7 @@ using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
 using System.Linq;
 using Avalonia.Markup.Xaml;
+using homework_2_spicymeatballs.Models;
 using homework_2_spicymeatballs.ViewModels;
 using homework_2_spicymeatballs.Views;
 
@@ -11,6 +12,9 @@ namespace homework_2_spicymeatballs;
 
 public partial class App : Application
 {
+    private LoginModel _loginModel;
+    
+    
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
@@ -23,9 +27,12 @@ public partial class App : Application
             // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 
             // More info: https://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
             DisableAvaloniaDataAnnotationValidation();
-            desktop.MainWindow = new LoginScreenView
+            _loginModel = new LoginModel(); 
+            
+
+        desktop.MainWindow = new LoginScreenView
             {
-                DataContext = new LoginScreenViewModel(),
+                DataContext = new LoginScreenViewModel(_loginModel),
             };
         }
 

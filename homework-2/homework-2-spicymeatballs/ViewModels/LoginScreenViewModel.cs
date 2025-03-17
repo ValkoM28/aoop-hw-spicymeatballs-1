@@ -4,12 +4,16 @@ using System.Globalization;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 
+using homework_2_spicymeatballs.Models;
+
+
 namespace homework_2_spicymeatballs.ViewModels; 
 
 public class LoginScreenViewModel : ViewModelBase, INotifyPropertyChanged
 {
     private string _username = string.Empty;
     private string _password = string.Empty;
+    private LoginModel _loginModel; 
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -42,16 +46,21 @@ public class LoginScreenViewModel : ViewModelBase, INotifyPropertyChanged
     
     public ICommand LoginCommand { get; }
 
-    public LoginScreenViewModel()
+    public LoginScreenViewModel(LoginModel loginModel)
     {
+        _loginModel = loginModel;
         LoginCommand = new RelayCommand(Login);
     }
 
 
 
+
     private void Login()
     {
-        Console.WriteLine("Login command executed.");
+        if (_loginModel.ValidateUser(Username, Password))
+        {
+            return; 
+        }
     }
     
 }

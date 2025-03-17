@@ -1,0 +1,26 @@
+[
+  {
+    "Id": 0,
+    "Username": "mrbean@teacher.uni.edu",
+    "DefinitelyNotPasswordHash": "templatepasswordhash",
+    "Name": "Mr.",
+    "Surname": "Bean",
+    "TeachingSubjects": [0]
+  },
+  {
+    "Id": 1,
+    "Username": "ironman@teacher.uni.edu",
+    "DefinitelyNotPasswordHash": "templatepasswordhash",
+    "Name": "iron",
+    "Surname": "man",
+    "TeachingSubjects": [1]
+  },
+  {
+    "Id": 2,
+    "Username": "robertkalinak@teacher.uni.edu",
+    "DefinitelyNotPasswordHash": "templatepasswordhash",
+    "Name": "Robert",
+    "Surname": "Kalinak",
+    "TeachingSubjects": [2]
+  }
+]
