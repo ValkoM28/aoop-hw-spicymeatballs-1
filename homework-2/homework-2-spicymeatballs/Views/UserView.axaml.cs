@@ -7,5 +7,7 @@ public partial class UserView : Window
     public UserView()
     {
         InitializeComponent();
+        DataContext = new UserViewModel(username);
+
     }
 }
