@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using homework_2_spicymeatballs.AccountLogic;
 namespace homework_2_spicymeatballs.ViewModels;
 
 public class UserViewModel : ViewModelBase
@@ -26,7 +27,7 @@ public class UserViewModel : ViewModelBase
         {
             // Load students
             var studentsJson = File.ReadAllText(StudentsFile);
-            var students = JsonSerializer.Deserialize<List<Student>>(studentsJson);
+            var students = JsonSerializer.Deserialize<List<StudentAccount>>(studentsJson);
 
             // Find logged-in user
             var user = students?.FirstOrDefault(s => s.Username == username);
