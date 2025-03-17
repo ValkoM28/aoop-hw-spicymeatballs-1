@@ -7,6 +7,5 @@ public partial class LoginScreenView : Window
     public LoginScreenView()
     {
         InitializeComponent();
-
     }
 }

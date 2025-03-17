@@ -8,16 +8,19 @@ public class Subject
     public int Id { get; set; }
     public string Name { get; set; }
     public string Description { get; set; }
-    public string Teacher { get; set; }
-    public List<string> Students { get; set; }
+    public int TeacherId { get; set; }
     
     [JsonConstructor]
-    public Subject(int id, string name, string description, string teacher, List<string> students)
+    public Subject(int id, string name, string description, int teacherid)
     {
         Id = id;
         Name = name;
         Description = description;
-        Teacher = teacher;
-        Students = students;
+        TeacherId = teacherid;
+    }
+    
+    public override string ToString()
+    {
+        return Id+" "+Name+" "+Description+" "+TeacherId;
     }
 }
