@@ -1,3 +1,4 @@
+using System;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core;
@@ -15,6 +16,8 @@ public partial class App : Application
 {
     //models
     private LoginModel _loginModel;
+    private StudentModel _studentModel; 
+    private TeacherModel _teacherModel;
     
     
     //viewmodels
@@ -24,10 +27,11 @@ public partial class App : Application
     
     //views
     private LoginScreenView _loginScreenView;
-    private IViewPlaceholder _studentView;
-    private IViewPlaceholder _teacherView;
+    private StudentView _studentView;
+    private TeacherView _teacherView;
     
-    
+    //services
+    private AccountManager _accountManager; 
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
@@ -44,19 +48,14 @@ public partial class App : Application
             //Login screen setup
             _loginModel = new LoginModel(new AccountLoader());
             _loginScreenViewModel = new LoginScreenViewModel(_loginModel); 
-            _loginScreenView = new LoginScreenView { DataContext = new LoginScreenViewModel(_loginModel) };
+            _loginScreenView = new LoginScreenView { DataContext = _loginScreenViewModel};
             
             //Student view setup
             
-            //_studentModel = ...
-            //_studentViewViewModel = ...
-            //_studentView = ...
+            
             
             //Teacher view setup
-            
-            //_teacherModel = ...
-            //_teacherViewViewModel = ...
-            //_teacherView = ...
+
             
             
             
@@ -67,13 +66,35 @@ public partial class App : Application
             
             _loginScreenViewModel.LoginSucceeded += () =>
             {
-                if (_loginModel.GetAccount(_loginScreenViewModel.Username).GetType() == typeof(StudentAccount))
+                _accountManager = new AccountManager(_loginModel.GetAllAccounts(), _loginModel.GetCurrentAccount(_loginScreenViewModel.Username));
+                
+                if (_loginModel.GetCurrentAccount(_loginScreenViewModel.Username).GetType() == typeof(StudentAccount))
                 {
-                    //desktop.MainWindow = _studentView;
+                    Console.WriteLine("here0");
+                    _studentModel = new StudentModel((StudentAccount) _loginModel.GetCurrentAccount(_loginScreenViewModel.Username), new SubjectLoader(), new SubjectSaver());
+                    Console.WriteLine("here1");
+
+                    _studentViewViewModel = new StudentViewModel(_studentModel, new SubjectLoader());
+                    Console.WriteLine("here2");
+
+                    _studentView = new StudentView { DataContext = _studentViewViewModel}; 
+                    Console.WriteLine("here3");
+                    
+                    desktop.MainWindow = _studentView;
+                    desktop.MainWindow.Show();
+                    Console.WriteLine("here4");
+                }
+                else if (_loginModel.GetCurrentAccount(_loginScreenViewModel.Username).GetType() == typeof(TeacherAccount))
+                {
+                    _teacherModel = new TeacherModel((TeacherAccount) _loginModel.GetCurrentAccount(_loginScreenViewModel.Username));
+                    _teacherViewViewModel = new TeacherViewModel(_teacherModel);
+                    _teacherView = new TeacherView { DataContext = _teacherViewViewModel }; 
+                    
+                    desktop.MainWindow = _teacherView;
                 }
                 else
                 {
-                    //desktop.MainWindow = _teacherView;
+                    Console.WriteLine("Account type not recognized.");
                 }
             };
 

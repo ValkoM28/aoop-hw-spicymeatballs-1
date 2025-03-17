@@ -57,7 +57,8 @@ public class LoginScreenViewModel : ViewModelBase, INotifyPropertyChanged
     {
         if (_loginModel.ValidateUser(Username, Password))
         {
-            LoginSucceeded?.Invoke(); 
+            Console.WriteLine("Login successful");
+            LoginSucceeded?.Invoke();
         }
     }
     

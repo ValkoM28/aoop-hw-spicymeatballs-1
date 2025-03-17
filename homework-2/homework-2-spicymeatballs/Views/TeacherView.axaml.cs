@@ -4,9 +4,8 @@ namespace homework_2_spicymeatballs.Views;
 
 public partial class TeacherView : Window
 {
-    public TeacherView(string username)
+    public TeacherView()
     {
         InitializeComponent();
-        DataContext = new TeacherViewModel(username);
     }
 }

@@ -30,6 +30,9 @@
         <DependentUpon>LoginScreenView.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
+      <Compile Update="Views\TeacherView.axaml.cs">
+        <DependentUpon>TeacherView.axaml</DependentUpon>
+      </Compile>
     </ItemGroup>
 
     <ItemGroup>

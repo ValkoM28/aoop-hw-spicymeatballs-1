@@ -23,5 +23,13 @@
     "Name": "Lazy",
     "Surname": "Student",
     "EnrolledSubjects": [0, 1, 2]
+  },
+  {
+    "Id": 3,
+    "Username": "help",
+    "DefinitelyNotPasswordHash": "me",
+    "Name": "Lazy",
+    "Surname": "Student",
+    "EnrolledSubjects": [0, 1, 2]
   }
 ]

@@ -4,20 +4,20 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-        x:Class="homework_2_spicymeatballs.Views.UserView"
-        x:DataType="vm:UserViewModel"
+        x:Class="homework_2_spicymeatballs.Views.StudentView"
+        x:DataType="vm:StudentViewModel"
         Title="User Subjects">
 
     <Design.DataContext>
-        <vm:UserSubjectsViewModel/>
+        <vm:StudentViewModel/>
     </Design.DataContext>
 
     <Grid>
         <StackPanel>
             <!-- User Information -->
             <TextBlock Text="User Information" FontSize="20" FontWeight="Bold" Margin="0,0,0,10"/>
-            <TextBlock Text="Username: {Binding Username}" FontSize="16"/>
-            <TextBlock Text="Full Name: {Binding FullName}" FontSize="16" Margin="0,0,0,10"/>
+            <TextBlock Text="{Binding Username}" FontSize="16"/>
+            <TextBlock Text="{Binding Fullname}" FontSize="16" Margin="0,0,0,10"/>
             
             <!-- Enrolled Subjects -->
             <TextBlock Text="Enrolled Subjects" FontSize="18" FontWeight="Bold" Margin="0,10,0,5"/>
