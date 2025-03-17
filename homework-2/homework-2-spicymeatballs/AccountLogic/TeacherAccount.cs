@@ -4,7 +4,7 @@ namespace homework_2_spicymeatballs.AccountLogic;
 
 public class TeacherAccount : IAccount
 {
-    public int Id { get; }
+    public int Id { get; set; }
     public string Username { get; set; }
     public string DefinitelyNotPasswordHash { get; set; }
     public string Name { get; set; }
@@ -13,6 +13,6 @@ public class TeacherAccount : IAccount
     
     public override string ToString()
     {
-        return Id+" "+Username+" "+ DefinitelyNotPasswordHash+" "+Name+" "+Surname;
+        return Id+" "+Username+" "+ DefinitelyNotPasswordHash+" "+Name+" "+Surname + " " + string.Join(" ", TeachingSubjects);
     }
 }
