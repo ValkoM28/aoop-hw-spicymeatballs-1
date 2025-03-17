@@ -19,6 +19,9 @@
 
             <!-- Teaching Subjects -->
             <TextBlock Text="Teaching Subjects" FontSize="18" FontWeight="Bold" Margin="0,10,0,5"/>
+            <Button Content="Add" Command="{Binding AddSubjectCommand}"></Button>
+            <Button Content="Remove" Command="{Binding RemoveSubjectCommand}"></Button>
+            <Button Content="Edit" Command="{Binding EditSubjectCommand}"></Button>
             <ListBox ItemsSource="{Binding TeachingSubjects}" Height="200">
                 <ListBox.ItemTemplate>
                     <DataTemplate>

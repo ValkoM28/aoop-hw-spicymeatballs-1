@@ -22,8 +22,8 @@ public partial class App : Application
     
     //viewmodels
     private LoginScreenViewModel _loginScreenViewModel;
-    private ViewModelBase _studentViewViewModel;
-    private ViewModelBase _teacherViewViewModel;
+    private StudentViewModel _studentViewViewModel;
+    private TeacherViewModel _teacherViewViewModel;
     
     //views
     private LoginScreenView _loginScreenView;
@@ -74,23 +74,31 @@ public partial class App : Application
                     _studentModel = new StudentModel((StudentAccount) _loginModel.GetCurrentAccount(_loginScreenViewModel.Username), new SubjectLoader(), new SubjectSaver());
                     Console.WriteLine("here1");
 
-                    _studentViewViewModel = new StudentViewModel(_studentModel, new SubjectLoader());
+                    _studentViewViewModel = new StudentViewModel(_studentModel);
                     Console.WriteLine("here2");
 
                     _studentView = new StudentView { DataContext = _studentViewViewModel}; 
                     Console.WriteLine("here3");
-                    
+                    var test = desktop.MainWindow; 
+
                     desktop.MainWindow = _studentView;
                     desktop.MainWindow.Show();
+                    test.Close();
+
                     Console.WriteLine("here4");
                 }
                 else if (_loginModel.GetCurrentAccount(_loginScreenViewModel.Username).GetType() == typeof(TeacherAccount))
                 {
-                    _teacherModel = new TeacherModel((TeacherAccount) _loginModel.GetCurrentAccount(_loginScreenViewModel.Username));
-                    _teacherViewViewModel = new TeacherViewModel(_teacherModel);
-                    _teacherView = new TeacherView { DataContext = _teacherViewViewModel }; 
+                    _teacherModel = new TeacherModel((TeacherAccount) _loginModel.GetCurrentAccount(_loginScreenViewModel.Username), new SubjectLoader(), new SubjectSaver());
                     
+                    _teacherViewViewModel = new TeacherViewModel(_teacherModel);
+                    _teacherView = new TeacherView { DataContext = _teacherViewViewModel };
+
+                    var test = desktop.MainWindow; 
                     desktop.MainWindow = _teacherView;
+                    
+                    desktop.MainWindow.Show();
+                    test.Close();
                 }
                 else
                 {

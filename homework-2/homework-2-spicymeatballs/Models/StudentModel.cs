@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using homework_2_spicymeatballs.AccountLogic;
 
 namespace homework_2_spicymeatballs.Models;
@@ -8,6 +9,7 @@ public class StudentModel
     public StudentAccount Account { get; set; }
     
     private readonly SubjectSaver _subjectSaver;
+    private readonly SubjectLoader _subjectLoader;
     
     
 
@@ -15,31 +17,29 @@ public class StudentModel
     {
         Account = account;
         _subjectSaver = saver;
+        _subjectLoader = loader;
     }
     
-    public void ListAllSubjects()
+    public List<Subject> ListAllSubjects()
     {
-
+        return _subjectLoader.LoadSubjects(); 
     }
 
-    public void ListEnrolledSubjects()
+    public List<Subject> ListEnrolledSubjects()
     {
-        
+        return _subjectLoader.LoadSubjectByStudent(this.Account); 
     }
 
-    public void ViewSubjectDetails()
+    public void EnrollSubject(int subjectId)
     {
-        
+        Account.EnrolledSubjects.Add(subjectId);
+        //_subjectSaver.SaveSubjects();
     }
 
-    public void EnrollSubject()
+    public void DropSubject(int subjectId)
     {
-        
-    }
-
-    public void DropSubject()
-    {
-        
+        Account.EnrolledSubjects.Remove(subjectId);
+        //_subjectSaver.SaveSubjects();
     }
     
 
