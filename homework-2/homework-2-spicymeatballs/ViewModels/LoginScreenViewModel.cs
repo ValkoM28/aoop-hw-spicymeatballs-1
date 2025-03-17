@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
-
+using homework_2_spicymeatballs.AccountLogic;
 using homework_2_spicymeatballs.Models;
 
 
@@ -13,8 +13,8 @@ public class LoginScreenViewModel : ViewModelBase, INotifyPropertyChanged
 {
     private string _username = string.Empty;
     private string _password = string.Empty;
-    private LoginModel _loginModel; 
-
+    private readonly LoginModel _loginModel;
+    public event Action? LoginSucceeded;
     public event PropertyChangedEventHandler? PropertyChanged;
 
     protected virtual void OnPropertyChanged(string propertyName)
@@ -53,13 +53,11 @@ public class LoginScreenViewModel : ViewModelBase, INotifyPropertyChanged
     }
 
 
-
-
     private void Login()
     {
         if (_loginModel.ValidateUser(Username, Password))
         {
-            return; 
+            LoginSucceeded?.Invoke(); 
         }
     }
     
