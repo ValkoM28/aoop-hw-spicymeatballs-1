@@ -26,6 +26,11 @@ public class LoginModel
       return Accounts.Exists(user =>
          user.Username == username && user.DefinitelyNotPasswordHash == Hasher.Hashed(password)); 
    }
+   
+   public IAccount GetAccount(string username)
+   {
+      return Accounts.Find(user => user.Username == username);
+   }
 
    private void PrintAccountsDebug()
    {

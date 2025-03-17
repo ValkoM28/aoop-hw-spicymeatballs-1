@@ -13,7 +13,19 @@ namespace homework_2_spicymeatballs;
 
 public partial class App : Application
 {
+    //models
     private LoginModel _loginModel;
+    
+    
+    //viewmodels
+    private LoginScreenViewModel _loginScreenViewModel;
+    private ViewModelBase _studentViewViewModel;
+    private ViewModelBase _teacherViewViewModel;
+    
+    //views
+    private LoginScreenView _loginScreenView;
+    private IViewPlaceholder _studentView;
+    private IViewPlaceholder _teacherView;
     
     
     public override void Initialize()
@@ -28,13 +40,43 @@ public partial class App : Application
             // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 
             // More info: https://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
             DisableAvaloniaDataAnnotationValidation();
-            _loginModel = new LoginModel(new AccountLoader()); 
             
-
-        desktop.MainWindow = new LoginScreenView
+            //Login screen setup
+            _loginModel = new LoginModel(new AccountLoader());
+            _loginScreenViewModel = new LoginScreenViewModel(_loginModel); 
+            _loginScreenView = new LoginScreenView { DataContext = new LoginScreenViewModel(_loginModel) };
+            
+            //Student view setup
+            
+            //_studentModel = ...
+            //_studentViewViewModel = ...
+            //_studentView = ...
+            
+            //Teacher view setup
+            
+            //_teacherModel = ...
+            //_teacherViewViewModel = ...
+            //_teacherView = ...
+            
+            
+            
+            /*
+             * Initial window setup.
+             */
+            desktop.MainWindow = _loginScreenView;
+            
+            _loginScreenViewModel.LoginSucceeded += () =>
             {
-                DataContext = new LoginScreenViewModel(_loginModel),
+                if (_loginModel.GetAccount(_loginScreenViewModel.Username).GetType() == typeof(StudentAccount))
+                {
+                    //desktop.MainWindow = _studentView;
+                }
+                else
+                {
+                    //desktop.MainWindow = _teacherView;
+                }
             };
+
         }
 
         base.OnFrameworkInitializationCompleted();
@@ -52,4 +94,5 @@ public partial class App : Application
             BindingPlugins.DataValidators.Remove(plugin);
         }
     }
+    
 }
