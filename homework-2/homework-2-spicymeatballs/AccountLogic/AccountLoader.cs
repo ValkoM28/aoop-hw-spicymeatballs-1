@@ -4,13 +4,13 @@ using System.Text.Json;
 
 namespace homework_2_spicymeatballs.AccountLogic;
 
-public static class AccountLoader
+public class AccountLoader
 {
-    static string _teacherAccountsPath = "teacher_users.json";
-    static string _studentAccountsPath = "student_users.json";
-    
-        
-    public static List<IAccount> LoadAccounts()
+    private const string TeacherAccountsPath = "teacher_users.json";
+    private const string StudentAccountsPath = "student_users.json";
+
+
+    public List<IAccount> LoadAccounts()
     {
         List<IAccount> accounts = new List<IAccount>();
         accounts.AddRange(LoadTeacherAccounts());
@@ -18,23 +18,23 @@ public static class AccountLoader
         return accounts;
     }
 
-    private static List<StudentAccount> LoadStudentAccounts()
+    private List<StudentAccount> LoadStudentAccounts()
     {
-        List<StudentAccount> studentAccounts = new List<StudentAccount>();
-        if (File.Exists(_studentAccountsPath))
+        List<StudentAccount> studentAccounts = [];
+        if (File.Exists(StudentAccountsPath))
         {
-            string json = File.ReadAllText(_studentAccountsPath);
+            string json = File.ReadAllText(StudentAccountsPath);
             studentAccounts = JsonSerializer.Deserialize<List<StudentAccount>>(json);
         }
         return studentAccounts; 
     }
     
-    private static List<TeacherAccount> LoadTeacherAccounts()
+    private List<TeacherAccount> LoadTeacherAccounts()
     {
-        List<TeacherAccount> teacherAccounts = new List<TeacherAccount>();
-        if (File.Exists(_teacherAccountsPath))
+        List<TeacherAccount> teacherAccounts = [];
+        if (File.Exists(TeacherAccountsPath))
         {
-            string json = File.ReadAllText(_teacherAccountsPath);
+            string json = File.ReadAllText(TeacherAccountsPath);
             teacherAccounts = JsonSerializer.Deserialize<List<TeacherAccount>>(json);
         }
         return teacherAccounts; 
