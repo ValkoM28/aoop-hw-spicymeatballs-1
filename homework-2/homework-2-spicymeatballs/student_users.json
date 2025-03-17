@@ -30,6 +30,6 @@
     "DefinitelyNotPasswordHash": "me",
     "Name": "Lazy",
     "Surname": "Student",
-    "EnrolledSubjects": [0, 1, 2]
+    "EnrolledSubjects": [0, 1]
   }
 ]

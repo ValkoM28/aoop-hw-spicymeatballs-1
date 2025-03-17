@@ -21,13 +21,28 @@
             
             <!-- Enrolled Subjects -->
             <TextBlock Text="Enrolled Subjects" FontSize="18" FontWeight="Bold" Margin="0,10,0,5"/>
-            <ListBox ItemsSource="{Binding EnrolledSubjects}" Height="200">
+            <Button Content="Drop" Command="{Binding DropSubjectCommand}"></Button>
+            <ListBox ItemsSource="{Binding EnrolledSubjects}" SelectedItem="{Binding SelectedSubjectDrop, Mode=TwoWay}" Height="200">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding}" FontSize="14" Padding="5"/>
+                        </StackPanel>
+
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            
+            <Button Content="Enroll" Command="{Binding EnrollSubjectCommand}"></Button>
+            <ListBox ItemsSource="{Binding AvailableSubjects}" SelectedItem="{Binding SelectedSubjectEnroll, Mode=TwoWay}" Height="200">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding}" FontSize="14" Padding="5"/>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
+            
+            
         </StackPanel>
     </Grid>
 </Window>
