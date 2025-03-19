@@ -5,7 +5,7 @@ Everyone going through this repo that is not Maximilian (our professor) nor his 
 
 ## If you are still determined, proceed with caution. 
 
-### And lastly, if you need to practice fixing someone else's code however, this is definitely the right place for you! 
+### And lastly, if you need to practice fixing someone else's code, this is definitely the right place for you! 
 
 Good luck sailing these seas. 
 
