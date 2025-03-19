@@ -2,7 +2,7 @@
   {
     "Id": 0,
     "Username": "gamerstudent@student.uni.edu",
-    "DefinitelyNotPasswordHash": "templatepasswordhash",
+    "DefinitelyNotPasswordHash": "404cdd7bc109c432f8cc2443b45bcfe95980f5107215c645236e577929ac3e52", 
     "Name": "Gamer",
     "Surname": "Student",
     "EnrolledSubjects": [
@@ -14,7 +14,7 @@
   {
     "Id": 1,
     "Username": "startupstudent@student.uni.edu",
-    "DefinitelyNotPasswordHash": "templatepasswordhash",
+    "DefinitelyNotPasswordHash": "a20aff106fe011d5dd696e3b7105200ff74331eeb8e865bb80ebd82b12665a07",
     "Name": "Startup",
     "Surname": "Student",
     "EnrolledSubjects": [
@@ -26,7 +26,7 @@
   {
     "Id": 2,
     "Username": "layzstudent@student.uni.edu",
-    "DefinitelyNotPasswordHash": "templatepasswordhash",
+    "DefinitelyNotPasswordHash": "ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f", 
     "Name": "Lazy",
     "Surname": "Student",
     "EnrolledSubjects": [
@@ -38,7 +38,7 @@
   {
     "Id": 3,
     "Username": "help",
-    "DefinitelyNotPasswordHash": "me",
+    "DefinitelyNotPasswordHash": "2744ccd10c7533bd736ad890f9dd5cab2adb27b07d500b9493f29cdc420cb2e0", 
     "Name": "Lazy",
     "Surname": "Student",
     "EnrolledSubjects": [
