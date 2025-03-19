@@ -2,10 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using homework_2_spicymeatballs.Models;
+using homework_2_spicymeatballs.Views;
+
 
 namespace homework_2_spicymeatballs.ViewModels;
 
@@ -43,27 +46,39 @@ public partial class StudentViewModel : ViewModelBase
         //EnrolledSubjects = _subjectLoader.LoadSubjectByStudent(_studentModel.Account);
         //AvailableSubjects = Subjects.Except(EnrolledSubjects, new SubjectComparer()).ToList();
 
-        DropSubjectCommand = new RelayCommand(Drop);
-        EnrollSubjectCommand = new RelayCommand(Enroll);
+        DropSubjectCommand = new AsyncRelayCommand(Drop);
+        EnrollSubjectCommand = new AsyncRelayCommand(Enroll);
 
     }
     
+    /*
     public void Enroll()
     {
         if (SelectedSubjectEnroll == null) return;
         
-        _studentModel.AccountManager.AddSubject(SelectedSubjectEnroll.Id);
-        RefreshSubjects();
+
+        ShowPopup("Do you want to enroll in subject ?");
+        if (GetPopupResult() == true){
+            _studentModel.Account.EnrolledSubjects.Add(SelectedSubjectEnroll.Id);
+            RefreshSubjects();
+        }
+
+
     }
     
     public void Drop()
     {
         if (SelectedSubjectDrop == null) return;
 
-        _studentModel.AccountManager.DropSubject(SelectedSubjectDrop.Id);
-        RefreshSubjects();
+
+        ShowPopup("Do you want to drop subject ?");
+        if (GetPopupResult() == true){
+            _studentModel.Account.EnrolledSubjects.Remove(SelectedSubjectDrop.Id);
+            RefreshSubjects();
+        }
+
     }
-    
+    */
     private void RefreshSubjects()
     {
         EnrolledSubjects.Clear();
@@ -94,5 +109,82 @@ public partial class StudentViewModel : ViewModelBase
             return obj.Id.GetHashCode();
         } 
         
+    }
+
+    private bool popupResult;
+    private void ShowPopup(string customMessage)
+    {
+        var welcomeView = new PopupView(customMessage);
+
+        // Subscribe to the event to handle popup closure
+        welcomeView.OnPopupClosed += HandlePopupClosed;
+
+        // Show the popup as a normal window
+        welcomeView.Show();
+    }
+
+
+    // FOR LOGGING ONLY BASICALLY LEAVE IT HERE
+    private void HandlePopupClosed(bool result)
+    {
+        popupResult = result;
+        Console.WriteLine(popupResult);
+        if (result == false)
+        {
+            Console.WriteLine("Popup was closed with a result of 'false'.");
+        }
+        else
+        {
+            Console.WriteLine("Popup was closed with another result.");
+        }
+    }
+
+    public bool GetPopupResult()
+    {
+        Console.WriteLine("GetPopupResult called");
+        return popupResult;
+    }
+
+    private async Task<bool> ShowPopupAsync(string customMessage)
+    {
+        var tcs = new TaskCompletionSource<bool>();
+        var popupView = new PopupView(customMessage);
+
+        // Subscribe to the event to handle popup closure
+        popupView.OnPopupClosed += result =>
+        {
+            tcs.SetResult(result);
+            popupView.Close();
+        };
+
+        // Show the popup as a normal window
+        popupView.Show();
+
+        // Wait for the popup to close and return the result
+        return await tcs.Task;
+    }
+
+    public async Task Enroll()
+    {
+        if (SelectedSubjectEnroll == null) return;
+
+        var result = await ShowPopupAsync("Do you want to enroll in subject?");
+        if (result)
+        {
+            _studentModel.Account.EnrolledSubjects.Add(SelectedSubjectEnroll.Id);
+            RefreshSubjects();
+        }
+    }
+
+    public async Task Drop()
+    {
+        if (SelectedSubjectDrop == null) return;
+
+        var result = await ShowPopupAsync("Do you want to drop subject?");
+        if (result)
+        {
+            _studentModel.Account.EnrolledSubjects.Remove(SelectedSubjectDrop.Id);
+            RefreshSubjects();
+        }
     }
 }
