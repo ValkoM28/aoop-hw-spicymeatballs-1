@@ -6,7 +6,6 @@ using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using homework_2_spicymeatballs.Models;
-using Xunit;
 
 namespace homework_2_spicymeatballs.ViewModels;
 
