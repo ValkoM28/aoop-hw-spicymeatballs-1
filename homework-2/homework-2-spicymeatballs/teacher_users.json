@@ -22,5 +22,14 @@
     "Name": "Robert",
     "Surname": "Kalinak",
     "TeachingSubjects": [2]
+  },
+
+  {
+    "Id": 3,
+    "Username": "test",
+    "DefinitelyNotPasswordHash": "test",
+    "Name": "Robert",
+    "Surname": "Kalinak",
+    "TeachingSubjects": [1, 2]
   }
 ]

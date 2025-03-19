@@ -17,7 +17,7 @@
 
 
     <Grid>
-        <Border CornerRadius="15" Background="#FFFFFF" Padding="30" Margin="30">
+        <Border Background="#F5F5DC">
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                 
                 <!-- Title -->
@@ -34,14 +34,13 @@
                     <TextBox Text="{Binding Password, Mode=TwoWay}"
                              Classes="revealPasswordButton"
                              PasswordChar="*"
-                             Width="210" Height="35"
-                             Background="#EEE"/>
+                             Width="250" Height="35"
+                             Background="#EEE"
+                             CornerRadius="8"/>
                 </StackPanel>
 
                 <!-- Login Button -->
-                <Button Content="Login" Command="{Binding LoginCommand}" Background="#007AFF" Foreground="White"
-                        Width="250" Height="40" CornerRadius="8" Margin="0,20,0,0"/>
-
+                <Button Content="Login" Command="{Binding LoginCommand}"  Width="250" Height="40" CornerRadius="8" Margin="0,20,0,0"/>
             </StackPanel>
         </Border>
     </Grid>
