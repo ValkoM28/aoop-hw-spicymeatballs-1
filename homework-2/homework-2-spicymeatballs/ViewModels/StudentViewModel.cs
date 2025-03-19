@@ -14,8 +14,8 @@ public partial class StudentViewModel : ViewModelBase
 {
     private readonly StudentModel _studentModel;
     
-    public string Username => "Username: " + _studentModel.Account.Username;
-    public string Fullname => "Full name: " + _studentModel.Account.Name + " " + _studentModel.Account.Surname;
+    public string Username => "Username: " + _studentModel.AccountManager.CurrentAccount.Username;
+    public string Fullname => "Full name: " + _studentModel.AccountManager.CurrentAccount.Name + " " + _studentModel.AccountManager.CurrentAccount.Surname;
     
     public List<Subject> Subjects { get; set; }
     [ObservableProperty] 
@@ -53,7 +53,7 @@ public partial class StudentViewModel : ViewModelBase
     {
         if (SelectedSubjectEnroll == null) return;
         
-        _studentModel.Account.EnrolledSubjects.Add(SelectedSubjectEnroll.Id);
+        _studentModel.AccountManager.AddSubject(SelectedSubjectEnroll.Id);
         RefreshSubjects();
     }
     
@@ -61,7 +61,7 @@ public partial class StudentViewModel : ViewModelBase
     {
         if (SelectedSubjectDrop == null) return;
 
-        _studentModel.Account.EnrolledSubjects.Remove(SelectedSubjectDrop.Id);
+        _studentModel.AccountManager.DropSubject(SelectedSubjectDrop.Id);
         RefreshSubjects();
     }
     

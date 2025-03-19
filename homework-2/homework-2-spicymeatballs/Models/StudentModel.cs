@@ -6,16 +6,16 @@ namespace homework_2_spicymeatballs.Models;
 
 public class StudentModel
 {
-    public StudentAccount Account { get; set; }
+    public AccountManager AccountManager { get; set; }
     
     private readonly SubjectSaver _subjectSaver;
     private readonly SubjectLoader _subjectLoader;
     
     
 
-    public StudentModel(StudentAccount account, SubjectLoader loader, SubjectSaver saver)
+    public StudentModel(AccountManager accountManager, SubjectLoader loader, SubjectSaver saver)
     {
-        Account = account;
+        AccountManager = accountManager;
         _subjectSaver = saver;
         _subjectLoader = loader;
     }
@@ -27,18 +27,18 @@ public class StudentModel
 
     public List<Subject> ListEnrolledSubjects()
     {
-        return _subjectLoader.LoadSubjectByStudent(this.Account); 
+        return _subjectLoader.LoadSubjectByStudent((this.AccountManager.CurrentAccount as StudentAccount)!); 
     }
 
     public void EnrollSubject(int subjectId)
     {
-        Account.EnrolledSubjects.Add(subjectId);
-        //_subjectSaver.SaveSubjects();
+        AccountManager.AddSubject(subjectId);
+        
     }
 
     public void DropSubject(int subjectId)
     {
-        Account.EnrolledSubjects.Remove(subjectId);
+        AccountManager.DropSubject(subjectId);
         //_subjectSaver.SaveSubjects();
     }
     

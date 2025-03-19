@@ -50,15 +50,6 @@ public partial class App : Application
             _loginScreenViewModel = new LoginScreenViewModel(_loginModel); 
             _loginScreenView = new LoginScreenView { DataContext = _loginScreenViewModel};
             
-            //Student view setup
-            
-            
-            
-            //Teacher view setup
-
-            
-            
-            
             /*
              * Initial window setup.
              */
@@ -66,27 +57,20 @@ public partial class App : Application
             
             _loginScreenViewModel.LoginSucceeded += () =>
             {
-                _accountManager = new AccountManager(_loginModel.GetAllAccounts(), _loginModel.GetCurrentAccount(_loginScreenViewModel.Username));
                 
-                if (_loginModel.GetCurrentAccount(_loginScreenViewModel.Username).GetType() == typeof(StudentAccount))
+                _accountManager = new AccountManager(_loginModel.GetCurrentAccount(_loginScreenViewModel.Username), _loginModel.GetAllAccounts() );
+                
+                if (_accountManager.CurrentAccount.GetType() == typeof(StudentAccount))
                 {
-                    Console.WriteLine("here0");
-                    _studentModel = new StudentModel((StudentAccount) _loginModel.GetCurrentAccount(_loginScreenViewModel.Username), new SubjectLoader(), new SubjectSaver());
-                    Console.WriteLine("here1");
-
+                    _studentModel = new StudentModel(_accountManager, new SubjectLoader(), new SubjectSaver());
                     _studentViewViewModel = new StudentViewModel(_studentModel);
-                    Console.WriteLine("here2");
-
                     _studentView = new StudentView { DataContext = _studentViewViewModel}; 
-                    Console.WriteLine("here3");
                     var test = desktop.MainWindow; 
-
                     desktop.MainWindow = _studentView;
                     desktop.MainWindow.Show();
                     test.Close();
-
-                    Console.WriteLine("here4");
                 }
+                
                 else if (_loginModel.GetCurrentAccount(_loginScreenViewModel.Username).GetType() == typeof(TeacherAccount))
                 {
                     _teacherModel = new TeacherModel((TeacherAccount) _loginModel.GetCurrentAccount(_loginScreenViewModel.Username), new SubjectLoader(), new SubjectSaver());
