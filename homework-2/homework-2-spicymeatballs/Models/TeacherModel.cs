@@ -23,10 +23,12 @@ public class TeacherModel
 
     public void CreateSubject(string name, string description)
     {
-        int id = _subjectLoader.LoadSubjects().Count;
-        var subject = new Subject(id, name, description, Account.Id); 
-        var subjects = _subjectLoader.LoadSubjects().Append(subject).ToList();
-        _subjectSaver.SaveSubjects(subjects);
+        var temp = _subjectLoader.LoadSubjects();
+        int id = temp[^1].Id + 1;
+        
+        var subject = new Subject(id, name, description, Account.Id);
+        temp.Add(subject); 
+        _subjectSaver.SaveSubjects(temp);
     }
     
     public void EditSubject(int id, string name, string description)

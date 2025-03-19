@@ -23,7 +23,8 @@ public partial class TeacherViewModel : ViewModelBase
     [ObservableProperty]
     private ObservableCollection<Subject> _teachingSubjects;
 
-    [ObservableProperty] private Subject _listBoxSelected; 
+    [ObservableProperty] 
+    private Subject? _listBoxSelected; 
 
     
     public ICommand AddSubjectCommand { get; set; }
@@ -48,7 +49,10 @@ public partial class TeacherViewModel : ViewModelBase
 
     private void Remove()
     {
+        if (ListBoxSelected == null) return; 
+        
         _teacherModel.DeleteSubject(ListBoxSelected.Id);
+        TeachingSubjects = new ObservableCollection<Subject>(_teacherModel.ViewSubjects());
     }
     /*
     private void Edit(Subject subject, string newName, string newDescription)

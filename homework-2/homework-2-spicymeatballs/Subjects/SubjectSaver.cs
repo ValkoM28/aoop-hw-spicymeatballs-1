@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
@@ -15,7 +16,15 @@ public class SubjectSaver
     
     public void SaveSubjects(List<Subject> subjects)
     {
-        string json = JsonSerializer.Serialize(subjects);
-        File.WriteAllText(Path, json);
+        try
+        {
+            string json = JsonSerializer.Serialize(subjects, new JsonSerializerOptions { WriteIndented = true });
+            File.WriteAllText(Path, json); 
+            Console.WriteLine("Subjects saved successfully.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error saving subjects: " + ex.Message);
+        }
     }
 }
