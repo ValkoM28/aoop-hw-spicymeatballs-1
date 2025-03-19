@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using homework_2_spicymeatballs.AccountLogic;
@@ -25,7 +26,7 @@ public class TeacherModel
         int id = _subjectLoader.LoadSubjects().Count;
         var subject = new Subject(id, name, description, Account.Id); 
         var subjects = _subjectLoader.LoadSubjects().Append(subject).ToList();
-        //_subjectSaver.SaveSubjects(subjects);
+        _subjectSaver.SaveSubjects(subjects);
     }
     
     public void EditSubject(int id, string name, string description)
@@ -35,15 +36,28 @@ public class TeacherModel
         temp.Description = description;
         var subjects = _subjectLoader.LoadSubjects();
         subjects[id] = temp;
-        //_subjectSaver.SaveSubjects(subjects);
+        _subjectSaver.SaveSubjects(subjects);
     }
     
     public void DeleteSubject(int id)
     {
-        var temp = _subjectLoader.GetSubjectById(id);
         var subjects = _subjectLoader.LoadSubjects();
+        var temp = subjects.FirstOrDefault(s => s.Id == id);
+        
+        if (temp == null)
+        {
+            Console.WriteLine("Subject not found");
+            return;
+        }
+        
         subjects.Remove(temp);
-        //_subjectSaver.SaveSubjects(subjects);
+        
+        Console.WriteLine("Deleted subject: " + temp.Name);
+        foreach (var subject in subjects)
+        {
+            Console.WriteLine(subject.Name);
+        }
+        _subjectSaver.SaveSubjects(subjects);
     }
     
     

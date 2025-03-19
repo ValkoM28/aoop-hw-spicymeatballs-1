@@ -19,8 +19,12 @@ public partial class TeacherViewModel : ViewModelBase
 
     public string Username => "Username: " + _teacherModel.Account.Username;
     public string Fullname => "Full name: " + _teacherModel.Account.Name + " " + _teacherModel.Account.Surname;
+    
     [ObservableProperty]
-    public ObservableCollection<Subject> _teachingSubjects;
+    private ObservableCollection<Subject> _teachingSubjects;
+
+    [ObservableProperty] private Subject _listBoxSelected; 
+
     
     public ICommand AddSubjectCommand { get; set; }
     public ICommand RemoveSubjectCommand { get; set; }
@@ -32,19 +36,19 @@ public partial class TeacherViewModel : ViewModelBase
         _teacherModel = model;
         TeachingSubjects = new ObservableCollection<Subject>(_teacherModel.ViewSubjects());
         
-        AddSubjectCommand = new RelayCommand<Subject>(Add);
-        RemoveSubjectCommand = new RelayCommand<Subject>(Remove);
+        AddSubjectCommand = new RelayCommand(Add);
+        RemoveSubjectCommand = new RelayCommand(Remove);
         //EditSubjectCommand = new RelayCommand<Subject>(Edit);
     }
     
-    private void Add(Subject subject)
+    private void Add()
     {
-        _teacherModel.CreateSubject(subject.Name, subject.Description);
+        //_teacherModel.CreateSubject(ListBoxSelected.Name, ListBoxSelected.Description);
     }
 
-    private void Remove(Subject subject)
+    private void Remove()
     {
-        _teacherModel.DeleteSubject(subject.Id);
+        _teacherModel.DeleteSubject(ListBoxSelected.Id);
     }
     /*
     private void Edit(Subject subject, string newName, string newDescription)

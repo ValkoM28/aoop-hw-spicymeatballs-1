@@ -22,7 +22,7 @@
             <Button Content="Add" Command="{Binding AddSubjectCommand}"></Button>
             <Button Content="Remove" Command="{Binding RemoveSubjectCommand}"></Button>
             <Button Content="Edit" Command="{Binding EditSubjectCommand}"></Button>
-            <ListBox ItemsSource="{Binding TeachingSubjects}" Height="200">
+            <ListBox ItemsSource="{Binding TeachingSubjects}" SelectedItem="{Binding ListBoxSelected, Mode=TwoWay}" Height="200">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding}" FontSize="14" Padding="5"/>
