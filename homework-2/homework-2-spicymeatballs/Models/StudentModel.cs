@@ -1,45 +1,45 @@
 using System;
+using System.Collections.Generic;
 using homework_2_spicymeatballs.AccountLogic;
 
 namespace homework_2_spicymeatballs.Models;
 
 public class StudentModel
 {
-    public StudentAccount Account { get; set; }
+    public AccountManager AccountManager { get; set; }
     
     private readonly SubjectSaver _subjectSaver;
+    private readonly SubjectLoader _subjectLoader;
     
     
 
-    public StudentModel(StudentAccount account, SubjectLoader loader, SubjectSaver saver)
+    public StudentModel(AccountManager accountManager, SubjectLoader loader, SubjectSaver saver)
     {
-        Account = account;
+        AccountManager = accountManager;
         _subjectSaver = saver;
+        _subjectLoader = loader;
     }
     
-    public void ListAllSubjects()
+    public List<Subject> ListAllSubjects()
     {
-
+        return _subjectLoader.LoadSubjects(); 
     }
 
-    public void ListEnrolledSubjects()
+    public List<Subject> ListEnrolledSubjects()
     {
+        return _subjectLoader.LoadSubjectByStudent((this.AccountManager.CurrentAccount as StudentAccount)!); 
+    }
+
+    public void EnrollSubject(int subjectId)
+    {
+        AccountManager.AddSubject(subjectId);
         
     }
 
-    public void ViewSubjectDetails()
+    public void DropSubject(int subjectId)
     {
-        
-    }
-
-    public void EnrollSubject()
-    {
-        
-    }
-
-    public void DropSubject()
-    {
-        
+        AccountManager.DropSubject(subjectId);
+        //_subjectSaver.SaveSubjects();
     }
     
 
