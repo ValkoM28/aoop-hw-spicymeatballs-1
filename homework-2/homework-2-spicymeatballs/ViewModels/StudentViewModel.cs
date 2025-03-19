@@ -52,7 +52,7 @@ public partial class StudentViewModel : ViewModelBase
     {
         if (SelectedSubjectEnroll == null) return;
         
-        _studentModel.AccountManager.AddSubject(SelectedSubjectEnroll.Id);
+        _studentModel.AddSubject(SelectedSubjectEnroll.Id);
         RefreshSubjects();
     }
     
@@ -60,7 +60,7 @@ public partial class StudentViewModel : ViewModelBase
     {
         if (SelectedSubjectDrop == null) return;
 
-        _studentModel.AccountManager.DropSubject(SelectedSubjectDrop.Id);
+        _studentModel.DropSubject(SelectedSubjectDrop.Id);
         RefreshSubjects();
     }
     

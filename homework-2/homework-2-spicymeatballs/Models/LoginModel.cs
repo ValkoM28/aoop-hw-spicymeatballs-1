@@ -13,9 +13,7 @@ public class LoginModel
 
    public LoginModel(AccountLoader accountLoader)
    {
-      
       Accounts = accountLoader.LoadAccounts();
-
       PrintAccountsDebug();
    }
    
