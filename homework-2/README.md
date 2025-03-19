@@ -1,7 +1,8 @@
 # Assignment 2 documentation
 ## User Accounts with passwords
+
 ### Teachers
-mrbean@teacher.uni.edu: bestteacher
+mrbean@teacher.uni.edu: bestteacher 
 ironman@teacher.uni.edu: securepassword
 bobbyfischer@teacher.uni.edu: 123456
 test: test
