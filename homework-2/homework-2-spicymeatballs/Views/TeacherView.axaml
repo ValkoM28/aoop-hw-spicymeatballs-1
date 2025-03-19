@@ -20,8 +20,8 @@
 
                 <!-- Teaching Subjects -->
                 <TextBlock Text="Teaching Subjects" FontSize="18" FontWeight="Bold" Margin="0,10,0,5"/>
-                <Button Content="Delete Subject" Command="{Binding AddSubjectCommand}" CornerRadius="8"/>
-                <Button Content="Create Subject" Command="{Binding RemoveSubjectCommand}" CornerRadius="8"/> <!--Both create and delete should be side by side for easy of use-->
+                <Button Content="Delete Subject" Command="{Binding RemoveSubjectCommand}" CornerRadius="8"/>
+                <Button Content="Create Subject" Command="{Binding AddSubjectCommand}" CornerRadius="8"/> <!--Both create and delete should be side by side for easy of use-->
                 <Button Content="Edit Subject" Command="{Binding EditSubjectCommand}"></Button>
 
                 <ListBox ItemsSource="{Binding TeachingSubjects}" SelectedItem="{Binding ListBoxSelected, Mode=TwoWay}" Height="200">

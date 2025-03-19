@@ -4,19 +4,5 @@
     "Name": "Template Subject 1",
     "Description": "Lorem Ipsum Dolor Sit Amet",
     "TeacherId": 0
-  },
-
-  {
-    "Id": 1,
-    "Name": "Template Subject 2",
-    "Description": "Lorem Ipsum Dolor Sit Amet",
-    "TeacherId": 1
-  },
-
-  {
-    "Id": 2,
-    "Name": "Template Subject 3",
-    "Description": "Lorem Ipsum Dolor Sit Amet",
-    "TeacherId": 2
   }
 ]
