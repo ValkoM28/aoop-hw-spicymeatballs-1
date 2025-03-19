@@ -14,9 +14,8 @@ public partial class StudentViewModel : ViewModelBase
 {
     private readonly StudentModel _studentModel;
     
-    public string Username => "Username: " + _studentModel.Account.Username;
-    public string Fullname => "Full name: " + _studentModel.Account.Name + " " + _studentModel.Account.Surname;
-    private readonly SubjectLoader _subjectLoader;
+    public string Username => "Username: " + _studentModel.AccountManager.CurrentAccount.Username;
+    public string Fullname => "Full name: " + _studentModel.AccountManager.CurrentAccount.Name + " " + _studentModel.AccountManager.CurrentAccount.Surname;
     
     public List<Subject> Subjects { get; set; }
     [ObservableProperty] 
@@ -33,14 +32,13 @@ public partial class StudentViewModel : ViewModelBase
     [ObservableProperty]
     private Subject _selectedSubjectEnroll;
     
-    public StudentViewModel(StudentModel studentModel, SubjectLoader loader)
+    public StudentViewModel(StudentModel studentModel)
     {
         _studentModel = studentModel;
-        _subjectLoader = loader;
         
-        Subjects = _subjectLoader.LoadSubjects();
+        Subjects = _studentModel.ListAllSubjects();
         
-        EnrolledSubjects = new ObservableCollection<Subject>(_subjectLoader.LoadSubjectByStudent(_studentModel.Account));
+        EnrolledSubjects = new ObservableCollection<Subject>(_studentModel.ListEnrolledSubjects());
         AvailableSubjects = new ObservableCollection<Subject>(Subjects.Except(EnrolledSubjects, new SubjectComparer()));
 
         //EnrolledSubjects = _subjectLoader.LoadSubjectByStudent(_studentModel.Account);
@@ -55,7 +53,7 @@ public partial class StudentViewModel : ViewModelBase
     {
         if (SelectedSubjectEnroll == null) return;
         
-        _studentModel.Account.EnrolledSubjects.Add(SelectedSubjectEnroll.Id);
+        _studentModel.AccountManager.AddSubject(SelectedSubjectEnroll.Id);
         RefreshSubjects();
     }
     
@@ -63,20 +61,20 @@ public partial class StudentViewModel : ViewModelBase
     {
         if (SelectedSubjectDrop == null) return;
 
-        _studentModel.Account.EnrolledSubjects.Remove(SelectedSubjectDrop.Id);
+        _studentModel.AccountManager.DropSubject(SelectedSubjectDrop.Id);
         RefreshSubjects();
     }
     
     private void RefreshSubjects()
     {
         EnrolledSubjects.Clear();
-        foreach (var subject in _subjectLoader.LoadSubjectByStudent(_studentModel.Account))
+        foreach (var subject in _studentModel.ListEnrolledSubjects())
         {
             EnrolledSubjects.Add(subject);
         }
 
         AvailableSubjects.Clear();
-        foreach (var subject in _subjectLoader.LoadSubjects().Except(EnrolledSubjects, new SubjectComparer()))
+        foreach (var subject in _studentModel.ListAllSubjects().Except(EnrolledSubjects, new SubjectComparer()))
         {
             AvailableSubjects.Add(subject);
         }

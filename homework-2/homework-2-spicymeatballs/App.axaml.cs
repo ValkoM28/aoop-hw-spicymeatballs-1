@@ -22,8 +22,8 @@ public partial class App : Application
     
     //viewmodels
     private LoginScreenViewModel _loginScreenViewModel;
-    private ViewModelBase _studentViewViewModel;
-    private ViewModelBase _teacherViewViewModel;
+    private StudentViewModel _studentViewViewModel;
+    private TeacherViewModel _teacherViewViewModel;
     
     //views
     private LoginScreenView _loginScreenView;
@@ -50,15 +50,6 @@ public partial class App : Application
             _loginScreenViewModel = new LoginScreenViewModel(_loginModel); 
             _loginScreenView = new LoginScreenView { DataContext = _loginScreenViewModel};
             
-            //Student view setup
-            
-            
-            
-            //Teacher view setup
-
-            
-            
-            
             /*
              * Initial window setup.
              */
@@ -66,31 +57,32 @@ public partial class App : Application
             
             _loginScreenViewModel.LoginSucceeded += () =>
             {
-                _accountManager = new AccountManager(_loginModel.GetAllAccounts(), _loginModel.GetCurrentAccount(_loginScreenViewModel.Username));
                 
-                if (_loginModel.GetCurrentAccount(_loginScreenViewModel.Username).GetType() == typeof(StudentAccount))
+                _accountManager = new AccountManager(_loginModel.GetCurrentAccount(_loginScreenViewModel.Username), _loginModel.GetAllAccounts() );
+                
+                if (_accountManager.CurrentAccount.GetType() == typeof(StudentAccount))
                 {
-                    Console.WriteLine("here0");
-                    _studentModel = new StudentModel((StudentAccount) _loginModel.GetCurrentAccount(_loginScreenViewModel.Username), new SubjectLoader(), new SubjectSaver());
-                    Console.WriteLine("here1");
-
-                    _studentViewViewModel = new StudentViewModel(_studentModel, new SubjectLoader());
-                    Console.WriteLine("here2");
-
+                    _studentModel = new StudentModel(_accountManager, new SubjectLoader(), new SubjectSaver());
+                    _studentViewViewModel = new StudentViewModel(_studentModel);
                     _studentView = new StudentView { DataContext = _studentViewViewModel}; 
-                    Console.WriteLine("here3");
-                    
+                    var test = desktop.MainWindow; 
                     desktop.MainWindow = _studentView;
                     desktop.MainWindow.Show();
-                    Console.WriteLine("here4");
+                    test.Close();
                 }
+                
                 else if (_loginModel.GetCurrentAccount(_loginScreenViewModel.Username).GetType() == typeof(TeacherAccount))
                 {
-                    _teacherModel = new TeacherModel((TeacherAccount) _loginModel.GetCurrentAccount(_loginScreenViewModel.Username));
-                    _teacherViewViewModel = new TeacherViewModel(_teacherModel);
-                    _teacherView = new TeacherView { DataContext = _teacherViewViewModel }; 
+                    _teacherModel = new TeacherModel((TeacherAccount) _loginModel.GetCurrentAccount(_loginScreenViewModel.Username), new SubjectLoader(), new SubjectSaver());
                     
+                    _teacherViewViewModel = new TeacherViewModel(_teacherModel);
+                    _teacherView = new TeacherView { DataContext = _teacherViewViewModel };
+
+                    var test = desktop.MainWindow; 
                     desktop.MainWindow = _teacherView;
+                    
+                    desktop.MainWindow.Show();
+                    test.Close();
                 }
                 else
                 {

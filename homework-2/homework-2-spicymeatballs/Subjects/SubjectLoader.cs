@@ -25,4 +25,16 @@ public class SubjectLoader
         var subjects = LoadSubjects();
         return subjects.FindAll(subject => student.EnrolledSubjects.Contains(subject.Id));
     }
+    
+    public List<Subject> LoadSubjectsByTeacher(TeacherAccount teacher)
+    {
+        var subjects = LoadSubjects();
+        return subjects.FindAll(subject => teacher.TeachingSubjects.Contains(subject.Id));
+    }
+    
+    public Subject GetSubjectById(int id)
+    {
+        var subjects = LoadSubjects();
+        return subjects.Find(subject => subject.Id == id);
+    }
 }

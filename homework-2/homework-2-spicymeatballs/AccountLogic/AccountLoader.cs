@@ -18,7 +18,7 @@ public class AccountLoader
         return accounts;
     }
 
-    private List<StudentAccount> LoadStudentAccounts()
+    public List<StudentAccount> LoadStudentAccounts()
     {
         List<StudentAccount> studentAccounts = [];
         if (File.Exists(StudentAccountsPath))
@@ -29,7 +29,7 @@ public class AccountLoader
         return studentAccounts; 
     }
     
-    private List<TeacherAccount> LoadTeacherAccounts()
+    public List<TeacherAccount> LoadTeacherAccounts()
     {
         List<TeacherAccount> teacherAccounts = [];
         if (File.Exists(TeacherAccountsPath))
