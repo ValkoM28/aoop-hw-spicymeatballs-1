@@ -29,7 +29,7 @@ public class SubjectLoader
     public List<Subject> LoadSubjectsByTeacher(TeacherAccount teacher)
     {
         var subjects = LoadSubjects();
-        return subjects.FindAll(subject => teacher.TeachingSubjects.Contains(subject.Id));
+        return subjects.FindAll(subject =>  subject.TeacherId == teacher.Id);
     }
     
     public Subject GetSubjectById(int id)

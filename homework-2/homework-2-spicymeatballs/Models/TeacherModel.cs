@@ -8,11 +8,13 @@ namespace homework_2_spicymeatballs.Models;
 public class TeacherModel
 {
     public TeacherAccount Account { get; set; } 
+    public AccountManager AccountManager { get; set; }
     private readonly SubjectLoader _subjectLoader;
     private readonly SubjectSaver _subjectSaver;
-    public TeacherModel(TeacherAccount account, SubjectLoader loader, SubjectSaver saver)
+    public TeacherModel(TeacherAccount account, AccountManager accountManager, SubjectLoader loader, SubjectSaver saver)
     {
         Account = account;
+        AccountManager = accountManager;
         _subjectLoader = loader;
         _subjectSaver = saver; 
     }
