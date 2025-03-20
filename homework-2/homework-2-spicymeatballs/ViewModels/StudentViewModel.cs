@@ -171,7 +171,7 @@ public partial class StudentViewModel : ViewModelBase
         var result = await ShowPopupAsync("Do you want to enroll in subject?");
         if (result)
         {
-            _studentModel.Account.EnrolledSubjects.Add(SelectedSubjectEnroll.Id);
+            _studentModel.AccountManager.AddSubject(SelectedSubjectEnroll.Id);
             RefreshSubjects();
         }
     }
@@ -183,7 +183,7 @@ public partial class StudentViewModel : ViewModelBase
         var result = await ShowPopupAsync("Do you want to drop subject?");
         if (result)
         {
-            _studentModel.Account.EnrolledSubjects.Remove(SelectedSubjectDrop.Id);
+            _studentModel.AccountManager.DropSubject(SelectedSubjectDrop.Id);
             RefreshSubjects();
         }
     }
