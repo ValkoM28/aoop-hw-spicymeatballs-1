@@ -73,7 +73,7 @@ public partial class App : Application
                 
                 else if (_loginModel.GetCurrentAccount(_loginScreenViewModel.Username).GetType() == typeof(TeacherAccount))
                 {
-                    _teacherModel = new TeacherModel((TeacherAccount) _loginModel.GetCurrentAccount(_loginScreenViewModel.Username), new SubjectLoader(), new SubjectSaver());
+                    _teacherModel = new TeacherModel(_accountManager, new SubjectLoader(), new SubjectSaver());
                     
                     _teacherViewViewModel = new TeacherViewModel(_teacherModel);
                     _teacherView = new TeacherView { DataContext = _teacherViewViewModel };

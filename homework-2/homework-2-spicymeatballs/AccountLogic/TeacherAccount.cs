@@ -9,10 +9,9 @@ public class TeacherAccount : IAccount
     public string DefinitelyNotPasswordHash { get; set; }
     public string Name { get; set; }
     public string Surname { get; set; }
-    public List<int> TeachingSubjects { get; set; }
     
     public override string ToString()
     {
-        return Id+" "+Username+" "+ DefinitelyNotPasswordHash+" "+Name+" "+Surname + " " + string.Join(" ", TeachingSubjects);
+        return Id+" "+Username+" "+ DefinitelyNotPasswordHash+" "+Name+" "+Surname;
     }
 }
