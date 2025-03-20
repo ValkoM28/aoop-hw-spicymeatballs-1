@@ -116,16 +116,139 @@ Steps:
 
 ### Unit tests 
 
+`Loading accounts from the jsons test, status Passed`
 ```csharp
-//unit test 1 here
+//this test will check if the data is loaded correctly, works only if you actually make the mock records the same as jsons, after they are updated in the app, they have to be updated here for test to work
+    [Fact]
+    public void LoadUsers_UsersLoadedCorrectly_ReturnsListOfAllUsers()
+    {
+        
+
+        var mockRecords = new List<IAccount>()
+        {
+            new TeacherAccount()
+            {
+                Id = 0,
+                Username = "mrbean@teacher.uni.edu",
+                DefinitelyNotPasswordHash = "87ab76f7403c8c4510165b6da357e95a16df8a10443a1bc12edf83747790b911",
+                Name = "Mr.",
+                Surname = "Bean",
+            }, 
+            
+            new TeacherAccount()
+            {
+                Id = 1,
+                Username = "ironman@teacher.uni.edu",
+                DefinitelyNotPasswordHash = "e0e6097a6f8af07daf5fc7244336ba37133713a8fc7345c36d667dfa513fabaa",
+                Name = "iron",
+                Surname = "man",
+            }, 
+            new TeacherAccount()
+            {
+                Id = 2,
+                Username = "bobbyfischer@teacher.uni.edu",
+                DefinitelyNotPasswordHash = "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+                Name = "Bobby",
+                Surname = "Fischer",
+            }, 
+            new TeacherAccount()
+            {
+                Id = 3, 
+                Username = "test",
+                DefinitelyNotPasswordHash = "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08", 
+                Name = "Bobby",
+                Surname = "Fischer"
+            },
+            new StudentAccount()
+            {
+                Id = 0,
+                Username = "gamerstudent@student.uni.edu",
+                DefinitelyNotPasswordHash = "404cdd7bc109c432f8cc2443b45bcfe95980f5107215c645236e577929ac3e52",
+                Name = "Gamer",
+                Surname = "Student",
+                EnrolledSubjects = new List<int>() {0, 1, 2}
+            }, 
+            new StudentAccount()
+            {
+                Id = 1,
+                Username = "startupstudent@student.uni.edu",
+                DefinitelyNotPasswordHash = "a20aff106fe011d5dd696e3b7105200ff74331eeb8e865bb80ebd82b12665a07",
+                Name = "Startup",
+                Surname = "Student",
+                EnrolledSubjects = new List<int>() {0, 1, 2}
+            }, 
+            
+            new StudentAccount()
+            {
+                Id = 2,
+                Username = "layzstudent@student.uni.edu",
+                DefinitelyNotPasswordHash = "ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f",
+                Name = "Lazy",
+                Surname = "Student",
+                EnrolledSubjects = new List<int>() {0, 2}
+            }, 
+            new StudentAccount()
+            {
+                Id = 3,
+                Username = "help",
+                DefinitelyNotPasswordHash = "2744ccd10c7533bd736ad890f9dd5cab2adb27b07d500b9493f29cdc420cb2e0",
+                Name = "Lazy",
+                Surname = "Student",
+                EnrolledSubjects = new List<int>() {1}
+            }, 
+        };
+        
+        
+        var loginModel = new LoginModel(new AccountLoader());
+        var actualRecords = loginModel.Accounts;
+        
+        // Assert - Check if both lists have the same length
+        Assert.Equal(mockRecords.Count, actualRecords.Count);
+        
+        Assert.True(mockRecords.SequenceEqual(actualRecords, new AccountComparer()));
+        
+
+    }
+
 ```
 
 ```csharp
 //unit test 2 here
+    [Fact]
+    public void ValidateUser_ValidCredentials_ReturnsTrue()
+    {
+        // Arrange: Create a fake account list
+        var mockAccount = new Mock<IAccount>();
+        mockAccount.Setup(a => a.Username).Returns("gamerstudent@student.uni.edu");
+        mockAccount.Setup(a => a.DefinitelyNotPasswordHash).Returns(Hasher.Hashed("templatepasswordhash"));
+
+        var loginModel = new LoginModel(new AccountLoader());
+        var accountsField = typeof(LoginModel).GetField("_accounts", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        accountsField.SetValue(loginModel, new List<IAccount> { mockAccount.Object });
+
+        // Act
+        bool result = loginModel.ValidateUser("gamerstudent@student.uni.edu", "templatepasswordhash");
+
+        // Assert
+        Assert.True(result);
+    }
 ```
 
 ```csharp
 //unit test 3 here
+    [Fact]
+    public void ValidateUser_InvalidCredentials_ReturnsFalse()
+    {
+        // Arrange
+        var loginModel = new LoginModel(new AccountLoader());
+
+        // Act
+        bool result = loginModel.ValidateUser("wronguser", "wrongpass");
+
+        // Assert
+        Assert.False(result);
+    }
+
 ```
 
 ### Functional testing
@@ -248,9 +371,174 @@ Status: PASS
 
 ## Models
 
+## `TeacherModel`
+
+The `TeacherModel` class allows a teacher to manage subjects. It enables viewing, creating, editing, and deleting subjects.
+
+### Properties
+- `AccountManager` - Manages account information.
+- `_subjectLoader` - Loads subjects from storage.
+- `_subjectSaver` - Saves subjects to storage.
+
+### Methods
+
+#### `List<Subject> ViewSubjects()`
+Retrieves all subjects assigned to the currently logged-in teacher.
+
+#### `void CreateSubject(string name, string description)`
+Creates a new subject with the specified name and description. The subject ID is determined based on the last subject in the list.
+
+#### `void EditSubject(int id, string name, string description)`
+Edits an existing subject by updating its name and description.
+
+#### `void DeleteSubject(int id)`
+Deletes a subject by its ID. If the subject is found, it is removed from the list and saved.
+
+---
+
+## `StudentModel`
+
+The `StudentModel` class allows students to view, enroll in, and drop subjects.
+
+### Properties
+- `AccountManager` - Manages account information.
+- `_subjectSaver` - Saves subjects to storage.
+- `_subjectLoader` - Loads subjects from storage.
+
+### Methods
+
+#### `List<Subject> ListAllSubjects()`
+Returns a list of all available subjects.
+
+#### `List<Subject> ListEnrolledSubjects()`
+Returns a list of subjects that the currently logged-in student is enrolled in.
+
+#### `void AddSubject(int subjectId)`
+Adds a subject to the student's enrolled subjects list.
+
+#### `void DropSubject(int subjectId)`
+Removes a subject from the student's enrolled subjects list if it exists.
+
+---
+
+## `LoginModel`
+
+The `LoginModel` class handles user authentication and account retrieval.
+
+### Properties
+- `_accounts` - A list of all accounts loaded from storage.
+
+### Methods
+
+#### `bool ValidateUser(string username, string password)`
+Checks if the provided username and password match an existing account.
+
+#### `IAccount GetCurrentAccount(string username)`
+Retrieves the account associated with the given username.
+
+#### `List<IAccount> GetAllAccounts()`
+Returns a list of all accounts.
+
+#### `void PrintAccountsDebug()`
+Prints all loaded accounts for debugging purposes.
+
+---
+
+
 ## ViewModels
 
-## Views
+## `LoginScreenViewModel`
+
+The `LoginScreenViewModel` class handles user authentication.
+
+### Properties
+
+- `Username` - Stores the user's username.
+- `Password` - Stores the user's password.
+- `LoginCommand` - Command bound to the login button.
+- `LoginSucceeded` - Event triggered upon successful login.
+
+### Methods
+
+#### `void Login()`
+Attempts to authenticate the user using the provided credentials.
+
+---
+
+## `StudentViewModel`
+
+The `StudentViewModel` class manages student interactions with subjects.
+
+### Properties
+
+- `Username` - Displays the logged-in student's username.
+- `Fullname` - Displays the logged-in student's full name.
+- `Subjects` - List of all available subjects.
+- `EnrolledSubjects` - List of subjects the student is enrolled in.
+- `AvailableSubjects` - List of subjects available for enrollment.
+- `SelectedSubjectDrop` - The subject selected for dropping.
+- `SelectedSubjectEnroll` - The subject selected for enrollment.
+- `DropSubjectCommand` - Command for dropping a subject.
+- `EnrollSubjectCommand` - Command for enrolling in a subject.
+
+### Methods
+
+#### `Task Enroll()`
+Enrolls the student in a selected subject after confirmation from a popup.
+
+#### `Task Drop()`
+Drops the selected subject after confirmation from a popup.
+
+#### `void RefreshSubjects()`
+Updates the enrolled and available subjects lists.
+
+#### `void ShowPopup(string customMessage)`
+Displays a popup with a message.
+
+#### `bool GetPopupResult()`
+Returns the result of the last popup interaction.
+
+---
+
+## `TeacherViewModel`
+
+The `TeacherViewModel` class manages teacher interactions with subjects.
+
+### Properties
+
+- `Username` - Displays the logged-in teacher's username.
+- `Fullname` - Displays the logged-in teacher's full name.
+- `TeachingSubjects` - List of subjects the teacher is responsible for.
+- `ListBoxSelected` - The currently selected subject.
+
+### Commands
+
+- `AddSubjectCommand` - Command for opening the add-subject popup.
+- `RemoveSubjectCommand` - Command for deleting a subject.
+- `EditSubjectCommand` - Command for opening the edit-subject popup.
+
+### Methods
+
+#### `void OpenSubjectPopup()`
+Opens a popup to create a new subject.
+
+#### `void OpenEditPopup()`
+Opens a popup to edit an existing subject.
+
+#### `void AddSubject(string name, string description)`
+Adds a new subject.
+
+#### `void Remove()`
+Deletes the selected subject.
+
+#### `void Edit(int subjectId, string newName, string newDescription)`
+Edits an existing subject.
+
+#### `void ShowPopup(string customMessage)`
+Displays a popup with a message.
+
+---
+
 
 ## Services/Miscellaneous
 
