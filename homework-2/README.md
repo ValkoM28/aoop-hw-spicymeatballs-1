@@ -365,9 +365,6 @@ Actual Result:
 
 Status: PASS
 ```
-### UI Testing
-
-
 
 ## Models
 
