@@ -57,18 +57,19 @@ public partial class StudentViewModel : ViewModelBase
         if (SelectedSubjectEnroll == null) return;
         
 
+
         ShowPopup("Do you want to enroll in subject ?");
         if (GetPopupResult() == true){
-            _studentModel.Account.EnrolledSubjects.Add(SelectedSubjectEnroll.Id);
-            RefreshSubjects();
+        _studentModel.AddSubject(SelectedSubjectEnroll.Id);
+        RefreshSubjects();
         }
-
-
     }
     
     public void Drop()
     {
         if (SelectedSubjectDrop == null) return;
+        _studentModel.DropSubject(SelectedSubjectDrop.Id);
+        RefreshSubjects();
 
 
         ShowPopup("Do you want to drop subject ?");
@@ -76,6 +77,7 @@ public partial class StudentViewModel : ViewModelBase
             _studentModel.Account.EnrolledSubjects.Remove(SelectedSubjectDrop.Id);
             RefreshSubjects();
         }
+
 
     }
     */
@@ -171,8 +173,8 @@ public partial class StudentViewModel : ViewModelBase
         var result = await ShowPopupAsync("Do you want to enroll in subject?");
         if (result)
         {
-            _studentModel.AccountManager.AddSubject(SelectedSubjectEnroll.Id);
-            RefreshSubjects();
+          _studentModel.AddSubject(SelectedSubjectEnroll.Id);
+          RefreshSubjects();
         }
     }
 
@@ -183,7 +185,7 @@ public partial class StudentViewModel : ViewModelBase
         var result = await ShowPopupAsync("Do you want to drop subject?");
         if (result)
         {
-            _studentModel.AccountManager.DropSubject(SelectedSubjectDrop.Id);
+            _studentModel.DropSubject(SelectedSubjectDrop.Id);
             RefreshSubjects();
         }
     }

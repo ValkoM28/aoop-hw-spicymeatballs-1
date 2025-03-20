@@ -1,11 +1,15 @@
 [
   {
-    "Id": 0, 
-    "Username": "gamerstudent@student.uni.edu", 
-    "DefinitelyNotPasswordHash": "templatepasswordhash", 
+    "Id": 0,
+    "Username": "gamerstudent@student.uni.edu",
+    "DefinitelyNotPasswordHash": "templatepasswordhash",
     "Name": "Gamer",
     "Surname": "Student",
-    "EnrolledSubjects": [0, 1, 2]
+    "EnrolledSubjects": [
+      0,
+      1,
+      2
+    ]
   },
   {
     "Id": 1,
@@ -13,16 +17,23 @@
     "DefinitelyNotPasswordHash": "templatepasswordhash",
     "Name": "Startup",
     "Surname": "Student",
-    "EnrolledSubjects": [0, 1, 2]
+    "EnrolledSubjects": [
+      0,
+      1,
+      2
+    ]
   },
-  
   {
     "Id": 2,
     "Username": "layzstudent@student.uni.edu",
     "DefinitelyNotPasswordHash": "templatepasswordhash",
     "Name": "Lazy",
     "Surname": "Student",
-    "EnrolledSubjects": [0, 1, 2]
+    "EnrolledSubjects": [
+      0,
+      1,
+      2
+    ]
   },
   {
     "Id": 3,
@@ -30,6 +41,9 @@
     "DefinitelyNotPasswordHash": "me",
     "Name": "Lazy",
     "Surname": "Student",
-    "EnrolledSubjects": [0, 1]
+    "EnrolledSubjects": [
+      1,
+      0
+    ]
   }
 ]

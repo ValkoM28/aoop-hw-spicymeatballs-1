@@ -30,39 +30,7 @@ public class AccountManager
         }
         CurrentAccount = currentAccount;
     }
-
     
-    // ✅ Adds a subject and updates the JSON file
-    public void AddSubject(int subjectId)
-    {
-        if (CurrentAccount is StudentAccount studentAccount)
-        {
-            studentAccount.EnrolledSubjects.Add(subjectId);
-            UpdateStudentData(studentAccount);
-        }
-    }
-    
-    public void DropSubject(int subjectId)
-    {
-        if (CurrentAccount is StudentAccount studentAccount)
-        {
-            if (studentAccount.EnrolledSubjects.Contains(subjectId))
-            {
-                studentAccount.EnrolledSubjects.Remove(subjectId);
-                UpdateAccountData(StudentAccounts, StudentDataPath);
-                Console.WriteLine($"Dropped subject {subjectId} successfully.");
-            }
-            else
-            {
-                Console.WriteLine($"Subject {subjectId} is not in the enrolled list.");
-            }
-        }
-        else
-        {
-            Console.WriteLine("Only students can drop subjects.");
-        }
-
-    }
 
     // ✅ Updates student data and saves back to JSON
     public void UpdateStudentData(StudentAccount updatedAccount)

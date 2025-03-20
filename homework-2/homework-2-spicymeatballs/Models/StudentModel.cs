@@ -29,17 +29,36 @@ public class StudentModel
     {
         return _subjectLoader.LoadSubjectByStudent((this.AccountManager.CurrentAccount as StudentAccount)!); 
     }
-
-    public void EnrollSubject(int subjectId)
+    
+    public void AddSubject(int subjectId)
     {
-        AccountManager.AddSubject(subjectId);
-        
+        if (AccountManager.CurrentAccount is StudentAccount studentAccount)
+        {
+            studentAccount.EnrolledSubjects.Add(subjectId);
+            AccountManager.UpdateStudentData(studentAccount);
+        }
     }
-
+    
     public void DropSubject(int subjectId)
     {
-        AccountManager.DropSubject(subjectId);
-        //_subjectSaver.SaveSubjects();
+        if (AccountManager.CurrentAccount is StudentAccount studentAccount)
+        {
+            if (studentAccount.EnrolledSubjects.Contains(subjectId))
+            {
+                studentAccount.EnrolledSubjects.Remove(subjectId);
+                AccountManager.UpdateStudentData(studentAccount);
+                Console.WriteLine($"Dropped subject {subjectId} successfully.");
+            }
+            else
+            {
+                Console.WriteLine($"Subject {subjectId} is not in the enrolled list.");
+            }
+        }
+        else
+        {
+            Console.WriteLine("Only students can drop subjects.");
+        }
+
     }
     
 
