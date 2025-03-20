@@ -2,30 +2,31 @@
   {
     "Id": 0,
     "Username": "mrbean@teacher.uni.edu",
-    "DefinitelyNotPasswordHash": "templatepasswordhash",
+    "DefinitelyNotPasswordHash": "87ab76f7403c8c4510165b6da357e95a16df8a10443a1bc12edf83747790b911", 
     "Name": "Mr.",
     "Surname": "Bean"
   },
   {
     "Id": 1,
     "Username": "ironman@teacher.uni.edu",
-    "DefinitelyNotPasswordHash": "templatepasswordhash",
+    "DefinitelyNotPasswordHash": "e0e6097a6f8af07daf5fc7244336ba37133713a8fc7345c36d667dfa513fabaa",
     "Name": "iron",
     "Surname": "man"
   },
   {
     "Id": 2,
-    "Username": "robertkalinak@teacher.uni.edu",
-    "DefinitelyNotPasswordHash": "templatepasswordhash",
-    "Name": "Robert",
-    "Surname": "Kalinak"
+    "Username": "bobbyfischer@teacher.uni.edu",
+    "DefinitelyNotPasswordHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",  
+    "Name": "Bobby",
+    "Surname": "Fischer"
   },
 
   {
     "Id": 3,
     "Username": "test",
-    "DefinitelyNotPasswordHash": "test",
-    "Name": "Robert",
-    "Surname": "Kalinak"
+    "DefinitelyNotPasswordHash": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
+    "Name": "Bobby",
+    "Surname": "Fischer",
+
   }
 ]
