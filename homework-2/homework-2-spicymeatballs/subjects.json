@@ -12,18 +12,6 @@
     "TeacherId": 0
   },
   {
-    "Id": 2,
-    "Name": "Template Subject 1",
-    "Description": "Lorem Ipsum Dolor Sit Amet",
-    "TeacherId": 3
-  },
-  {
-    "Id": 3,
-    "Name": "Template Subject 1",
-    "Description": "Lorem Ipsum Dolor Sfsdgdgsit Amet",
-    "TeacherId": 3
-  },
-  {
     "Id": 4,
     "Name": "dgds",
     "Description": "fdsgsddfsh",
@@ -34,5 +22,23 @@
     "Name": "testbobby",
     "Description": "erfdsgdgdfg",
     "TeacherId": 2
+  },
+  {
+    "Id": 6,
+    "Name": "math",
+    "Description": "mathematics",
+    "TeacherId": 3
+  },
+  {
+    "Id": 7,
+    "Name": "asdasdas",
+    "Description": "asdasd",
+    "TeacherId": 3
+  },
+  {
+    "Id": 8,
+    "Name": "aaaa",
+    "Description": "aa",
+    "TeacherId": 3
   }
 ]

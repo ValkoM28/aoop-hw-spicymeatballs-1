@@ -41,9 +41,8 @@
     "Name": "Lazy",
     "Surname": "Student",
     "EnrolledSubjects": [
-      2,
-      3,
-      4
+      4,
+      0
     ]
   }
 ]
