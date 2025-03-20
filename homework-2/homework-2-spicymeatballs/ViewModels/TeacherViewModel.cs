@@ -40,7 +40,7 @@ public partial class TeacherViewModel : ViewModelBase
         
         AddSubjectCommand = new RelayCommand(OpenSubjectPopup);
         RemoveSubjectCommand = new RelayCommand(Remove);
-        //EditSubjectCommand = new RelayCommand<Subject>(Edit);
+        EditSubjectCommand = new RelayCommand(OpenEditPopup);
     }
     
     
@@ -49,6 +49,22 @@ public partial class TeacherViewModel : ViewModelBase
         var popup = new CreateSubjectPopupView();
         popup.OnSubjectCreated += AddSubject;
         popup.Show();
+    }
+
+    public void OpenEditPopup()
+    {
+        if (ListBoxSelected == null)
+        {
+            return;
+        }
+        var editPopup = new EditSubjectPopupView(ListBoxSelected.Name, ListBoxSelected.Description);
+        editPopup.OnSubjectEdited += (newName, newDescription) =>
+        {
+            Edit(ListBoxSelected.Id, newName, newDescription);
+            ListBoxSelected.Name = newName;
+            ListBoxSelected.Description = newDescription;
+        };
+        editPopup.Show();
     }
 
     
@@ -66,10 +82,12 @@ public partial class TeacherViewModel : ViewModelBase
         _teacherModel.DeleteSubject(ListBoxSelected.Id);
         TeachingSubjects = new ObservableCollection<Subject>(_teacherModel.ViewSubjects());
     }
-    /*
-    private void Edit(Subject subject, string newName, string newDescription)
+    
+    private void Edit(int subjectId, string newName, string newDescription)
     {
-        _teacherModel.EditSubject(subject.Id, newName, newDescription);
-    } */
+        _teacherModel.EditSubject(subjectId, newName, newDescription);
+        TeachingSubjects = new ObservableCollection<Subject>(_teacherModel.ViewSubjects());
+
+    } 
 }
 
