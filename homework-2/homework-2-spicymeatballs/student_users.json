@@ -24,17 +24,6 @@
     ]
   },
   {
-    "Id": 3,
-    "Username": "help",
-    "DefinitelyNotPasswordHash": "2744ccd10c7533bd736ad890f9dd5cab2adb27b07d500b9493f29cdc420cb2e0",
-    "Name": "Lazy",
-    "Surname": "Student",
-    "EnrolledSubjects": [
-      1,
-      0
-    ]
-  },
-  {
     "Id": 2,
     "Username": "layzstudent@student.uni.edu",
     "DefinitelyNotPasswordHash": "ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f",
@@ -43,6 +32,17 @@
     "EnrolledSubjects": [
       0,
       2
+    ]
+  },
+  {
+    "Id": 3,
+    "Username": "help",
+    "DefinitelyNotPasswordHash": "2744ccd10c7533bd736ad890f9dd5cab2adb27b07d500b9493f29cdc420cb2e0",
+    "Name": "Lazy",
+    "Surname": "Student",
+    "EnrolledSubjects": [
+      4,
+      0
     ]
   }
 ]

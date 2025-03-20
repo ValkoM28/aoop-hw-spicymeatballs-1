@@ -7,10 +7,10 @@
         x:Class="homework_2_spicymeatballs.Views.PopupView"
         Title="Popup">
     <Grid>
-        <StackPanel>
-        <TextBlock Name="MessageTextBlock" HorizontalAlignment="Center" Margin="10"/>
-        <Button Content="Confirm" HorizontalAlignment="Center" Click="Confirm" Margin="10"/>
-        <Button Name="DenyButton" Content="Deny" HorizontalAlignment="Center" Click="Deny" Margin="10"/>
-    </StackPanel>
+        <StackPanel Background="#F5F5DC">
+            <TextBlock Name="MessageTextBlock" HorizontalAlignment="Center" Margin="10" Foreground="#333" FontWeight="Bold"/>
+            <Button Content="Confirm" HorizontalAlignment="Center" Click="Confirm" Margin="10"/>
+            <Button Name="DenyButton" Content="Deny" HorizontalAlignment="Center" Click="Deny" Margin="10"/>
+        </StackPanel>
     </Grid>
 </Window>
