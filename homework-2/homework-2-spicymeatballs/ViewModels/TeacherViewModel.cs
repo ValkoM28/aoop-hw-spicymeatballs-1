@@ -87,7 +87,9 @@ public partial class TeacherViewModel : ViewModelBase
     
     private void Edit(int subjectId, string newName, string newDescription)
     {
+        Console.WriteLine("Here");
         _teacherModel.EditSubject(subjectId, newName, newDescription);
+        Console.WriteLine("Here");
         TeachingSubjects = new ObservableCollection<Subject>(_teacherModel.ViewSubjects());
         ShowPopup("Subject edited");
 

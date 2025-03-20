@@ -33,11 +33,19 @@ public class TeacherModel
     
     public void EditSubject(int id, string name, string description)
     {
+        
         var temp = _subjectLoader.GetSubjectById(id);
+        Console.WriteLine("Editing subject: " + temp.Name);
+        Console.WriteLine(temp.Id);
         temp.Name = name; 
         temp.Description = description;
+        Console.WriteLine(temp.Name);
+        Console.WriteLine(temp.Description);
+        
         var subjects = _subjectLoader.LoadSubjects();
-        subjects[id] = temp;
+
+        var temp2 = subjects.FindIndex(subject => subject.Id == id); 
+        subjects[temp2] = temp;
         _subjectSaver.SaveSubjects(subjects);
     }
     
