@@ -7,18 +7,18 @@ namespace homework_2_spicymeatballs.Models;
 
 public class TeacherModel
 {
-    public TeacherAccount Account { get; set; } 
+    public AccountManager AccountManager { get; set; }
     private readonly SubjectLoader _subjectLoader;
     private readonly SubjectSaver _subjectSaver;
-    public TeacherModel(TeacherAccount account, SubjectLoader loader, SubjectSaver saver)
+    public TeacherModel(AccountManager accountManager, SubjectLoader loader, SubjectSaver saver)
     {
-        Account = account;
+        AccountManager = accountManager;
         _subjectLoader = loader;
         _subjectSaver = saver; 
     }
     public List<Subject> ViewSubjects()
     {
-        return _subjectLoader.LoadSubjectsByTeacher(Account); 
+        return _subjectLoader.LoadSubjectsByTeacher(AccountManager.CurrentAccount as TeacherAccount); 
     }
 
     public void CreateSubject(string name, string description)
@@ -26,7 +26,7 @@ public class TeacherModel
         var temp = _subjectLoader.LoadSubjects();
         int id = temp[^1].Id + 1;
         
-        var subject = new Subject(id, name, description, Account.Id);
+        var subject = new Subject(id, name, description, AccountManager.CurrentAccount.Id);
         temp.Add(subject); 
         _subjectSaver.SaveSubjects(temp);
     }

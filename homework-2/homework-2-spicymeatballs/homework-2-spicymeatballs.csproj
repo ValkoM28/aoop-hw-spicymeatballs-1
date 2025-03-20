@@ -36,6 +36,14 @@
       <Compile Update="Views\PopupView.axaml.cs">
         <DependentUpon>PopupView.axaml</DependentUpon>
       </Compile>
+      <Compile Update="Views\PopupViewCreateSubject.axaml.cs">
+        <DependentUpon>PopupViewCreateSubject.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\PopupViewEditSubject.axaml.cs">
+        <DependentUpon>PopupViewEditSubject.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
     </ItemGroup>
 
     <ItemGroup>

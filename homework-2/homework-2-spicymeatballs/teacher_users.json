@@ -4,24 +4,21 @@
     "Username": "mrbean@teacher.uni.edu",
     "DefinitelyNotPasswordHash": "templatepasswordhash",
     "Name": "Mr.",
-    "Surname": "Bean",
-    "TeachingSubjects": [0]
+    "Surname": "Bean"
   },
   {
     "Id": 1,
     "Username": "ironman@teacher.uni.edu",
     "DefinitelyNotPasswordHash": "templatepasswordhash",
     "Name": "iron",
-    "Surname": "man",
-    "TeachingSubjects": [1]
+    "Surname": "man"
   },
   {
     "Id": 2,
     "Username": "robertkalinak@teacher.uni.edu",
     "DefinitelyNotPasswordHash": "templatepasswordhash",
     "Name": "Robert",
-    "Surname": "Kalinak",
-    "TeachingSubjects": [2]
+    "Surname": "Kalinak"
   },
 
   {
@@ -29,7 +26,6 @@
     "Username": "test",
     "DefinitelyNotPasswordHash": "test",
     "Name": "Robert",
-    "Surname": "Kalinak",
-    "TeachingSubjects": [1, 2]
+    "Surname": "Kalinak"
   }
 ]

@@ -12,9 +12,10 @@ public partial class PopupView : Window
             set { MessageTextBlock.Text = value; }
         }
 
-    public PopupView(string message)
+    public PopupView(string message, bool interactive = true)
     {
         InitializeComponent();
+        DenyButton.IsVisible = interactive;
         CustomMessage = message;  // Set the custom message
     }
 
