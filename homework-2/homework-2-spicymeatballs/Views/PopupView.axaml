@@ -10,7 +10,7 @@
         <StackPanel>
         <TextBlock Name="MessageTextBlock" HorizontalAlignment="Center" Margin="10"/>
         <Button Content="Confirm" HorizontalAlignment="Center" Click="Confirm" Margin="10"/>
-        <Button Content="Deny" HorizontalAlignment="Center" Click="Deny" Margin="10"/>
+        <Button Name="DenyButton" Content="Deny" HorizontalAlignment="Center" Click="Deny" Margin="10"/>
     </StackPanel>
     </Grid>
 </Window>

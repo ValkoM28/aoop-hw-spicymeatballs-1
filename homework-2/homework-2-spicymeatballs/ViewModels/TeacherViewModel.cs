@@ -72,7 +72,8 @@ public partial class TeacherViewModel : ViewModelBase
     {
         _teacherModel.CreateSubject(name, description);
         TeachingSubjects = new ObservableCollection<Subject>(_teacherModel.ViewSubjects());
-
+        ShowPopup("Subject created");
+        
     }
 
     private void Remove()
@@ -81,13 +82,25 @@ public partial class TeacherViewModel : ViewModelBase
         
         _teacherModel.DeleteSubject(ListBoxSelected.Id);
         TeachingSubjects = new ObservableCollection<Subject>(_teacherModel.ViewSubjects());
+        ShowPopup("Subject deleted");
     }
     
     private void Edit(int subjectId, string newName, string newDescription)
     {
         _teacherModel.EditSubject(subjectId, newName, newDescription);
         TeachingSubjects = new ObservableCollection<Subject>(_teacherModel.ViewSubjects());
+        ShowPopup("Subject edited");
 
     } 
+    
+    private void ShowPopup(string customMessage)
+    {
+        var welcomeView = new PopupView(customMessage, interactive: false);
+
+        // Show the popup as a normal window
+        welcomeView.Show();
+    }
+
+
 }
 

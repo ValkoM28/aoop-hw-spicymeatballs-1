@@ -5,7 +5,7 @@ using Avalonia.Interactivity;
 namespace homework_2_spicymeatballs.Views;
 public partial class EditSubjectPopupView : Window
 {
-    public event Action<string, string> OnSubjectEdited; // Notify TeacherViewModel
+    public event Action<string, string> OnSubjectEdited; 
 
     public EditSubjectPopupView(string currentName, string currentDescription)
     {
@@ -21,7 +21,7 @@ public partial class EditSubjectPopupView : Window
 
         if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(description))
         {
-            return; // Optionally, show an error message
+            return; 
         }
 
         try
@@ -30,7 +30,7 @@ public partial class EditSubjectPopupView : Window
         }
         catch (Exception exception)
         {
-            Console.WriteLine("yay :D ");
+            Console.WriteLine("yay :D ");  // it is 2:07 am, don't judge me
         }
         finally
         {

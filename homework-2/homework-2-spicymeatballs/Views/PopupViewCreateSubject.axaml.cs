@@ -5,7 +5,7 @@ using Avalonia.Interactivity;
 namespace homework_2_spicymeatballs.Views;
 public partial class CreateSubjectPopupView : Window
 {
-    public event Action<string, string> OnSubjectCreated; // Notify TeacherViewModel
+    public event Action<string, string> OnSubjectCreated;
 
     public CreateSubjectPopupView()
     {
@@ -19,7 +19,7 @@ public partial class CreateSubjectPopupView : Window
 
         if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(description))
         {
-            return; // Optionally, show an error message
+            return;
         }
 
         OnSubjectCreated?.Invoke(name, description);
