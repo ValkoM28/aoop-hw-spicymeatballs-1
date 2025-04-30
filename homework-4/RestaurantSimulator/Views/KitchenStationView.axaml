@@ -1,53 +1,45 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:vm="using:RestaurantSimulator.ViewModels"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="300"
+             xmlns:conv="using:RestaurantSimulator.Converters"
+             xmlns:vm="using:RestaurantSimulator.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="200"
              x:Class="RestaurantSimulator.Views.KitchenStationView"
              x:DataType="vm:KitchenStationViewModel">
 
-    <Border Background="{DynamicResource ThemeBackgroundBrush}"
-            BorderBrush="{DynamicResource ThemeBorderBrush}"
-            BorderThickness="1"
-            CornerRadius="5"
-            Padding="10"
-            Margin="5">
+    <UserControl.Resources>
+        <conv:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </UserControl.Resources>
+
+    <Border BorderBrush="{DynamicResource ThemeBorderBrush}" 
+            BorderThickness="1" 
+            CornerRadius="4"
+            Margin="5"
+            Padding="10">
         <Grid RowDefinitions="Auto,*,Auto">
-            <StackPanel Grid.Row="0" Spacing="5">
-                <TextBlock Text="{Binding Station.Name}"
-                           FontSize="18"
-                           FontWeight="Bold"/>
-                
-                <TextBlock Text="{Binding Station.IsAvailable, Converter={StaticResource BoolToStatusConverter}}"
-                           FontSize="14"/>
-            </StackPanel>
+            <TextBlock Text="{Binding Station.Name}"
+                       FontSize="16"
+                       FontWeight="Bold"/>
             
-            <ContentControl Grid.Row="1"
-                          Content="{Binding CurrentRecipeViewModel}"
-                          Margin="0,10,0,0"/>
+            <Grid Grid.Row="1" 
+                  IsVisible="{Binding CurrentRecipeViewModel, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <StackPanel Spacing="5">
+                    <TextBlock Text="{Binding CurrentRecipeViewModel.Recipe.Name}"
+                               FontSize="14"
+                               FontWeight="SemiBold"/>
+                    <TextBlock Text="{Binding CurrentRecipeViewModel.CurrentStepDescription}"
+                               FontSize="12"/>
+                    <ProgressBar Value="{Binding CurrentRecipeViewModel.StepProgress}"
+                                Maximum="100"
+                                Height="10"/>
+                </StackPanel>
+            </Grid>
             
-            <StackPanel Grid.Row="2" 
-                       Orientation="Horizontal" 
-                       Spacing="5"
-                       Margin="0,10,0,0">
-                <TextBlock Text="Available Equipment:"
-                           FontSize="14"/>
-                
-                <ItemsControl ItemsSource="{Binding Station.AvailableEquipment}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <StackPanel Orientation="Horizontal" Spacing="5"/>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding}"
-                                       FontSize="14"/>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </StackPanel>
+            <TextBlock Grid.Row="2"
+                       Text="Available"
+                       IsVisible="{Binding Station.IsAvailable, Converter={StaticResource BooleanToVisibilityConverter}}"
+                       Foreground="Green"/>
         </Grid>
     </Border>
 </UserControl> 

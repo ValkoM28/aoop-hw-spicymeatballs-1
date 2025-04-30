@@ -17,11 +17,6 @@ public static class Extensions
         return isRunning ? "Stop" : "Start";
     }
 
-    public static bool CanProcessRecipe(this KitchenStation station, Recipe recipe)
-    {
-        return station.IsAvailable && 
-               recipe.Equipment.All(e => station.AvailableEquipment.Contains(e));
-    }
 
     public static TimeSpan GetTotalDuration(this Recipe recipe)
     {

@@ -1,0 +1,38 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:conv="using:RestaurantSimulator.Converters"
+             xmlns:vm="using:RestaurantSimulator.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="100"
+             x:Class="RestaurantSimulator.Views.RecipeItemView"
+             x:DataType="vm:RecipeItemViewModel">
+
+    <UserControl.Resources>
+        <conv:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <conv:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+    </UserControl.Resources>
+
+    <Border BorderBrush="{DynamicResource ThemeBorderBrush}" 
+            BorderThickness="1" 
+            CornerRadius="4"
+            Margin="0,2"
+            Padding="8">
+        <Grid ColumnDefinitions="*,Auto">
+            <StackPanel Grid.Column="0" Spacing="4">
+                <TextBlock Text="{Binding Recipe.Name}"
+                           FontSize="16"
+                           FontWeight="Bold"/>
+                <TextBlock Text="{Binding Recipe.Difficulty}"
+                           FontSize="14"/>
+                <TextBlock Text="{Binding Recipe.ProgressPercentage, StringFormat='Progress: {0}%'}"
+                           IsVisible="{Binding Recipe.IsInProgress, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+            </StackPanel>
+            <Button Grid.Column="1"
+                    Content="Add to Queue"
+                    Command="{Binding AddRecipeToQueueCommand}"
+                    CommandParameter="{Binding Recipe}"
+                    IsEnabled="{Binding Recipe.IsInProgress, Converter={StaticResource InverseBooleanConverter}}"/>
+        </Grid>
+    </Border>
+</UserControl> 
