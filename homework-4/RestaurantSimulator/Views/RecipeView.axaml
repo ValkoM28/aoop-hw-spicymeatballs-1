@@ -1,0 +1,38 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:RestaurantSimulator.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="RestaurantSimulator.Views.RecipeView"
+        x:DataType="vm:RecipeViewModel"
+        Title="RecipeView">
+
+    <Grid RowDefinitions="Auto,*,Auto" Margin="10">
+        <TextBlock Text="{Binding Recipe.Name}" 
+                   FontSize="24" 
+                   FontWeight="Bold"
+                   Grid.Row="0"/>
+        
+        <StackPanel Grid.Row="1" Spacing="10">
+            <TextBlock Text="{Binding CurrentStepDescription}"
+                       FontSize="16"/>
+            
+            <ProgressBar Value="{Binding StepProgress}"
+                        Minimum="0"
+                        Maximum="100"
+                        Height="20"/>
+            
+            <TextBlock Text="{Binding Recipe.ProgressPercentage, StringFormat='Overall Progress: {0:F1}%'}"
+                       HorizontalAlignment="Center"/>
+        </StackPanel>
+        
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="10">
+            <TextBlock Text="{Binding Recipe.Difficulty}"
+                       FontSize="14"/>
+            
+            <TextBlock Text="{Binding Recipe.IsInProgress, Converter={StaticResource BoolToStatusConverter}}"
+                       FontSize="14"/>
+        </StackPanel>
+    </Grid>
+</Window> 

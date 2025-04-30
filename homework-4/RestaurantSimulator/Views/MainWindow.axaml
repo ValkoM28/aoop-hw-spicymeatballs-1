@@ -3,11 +3,10 @@
         xmlns:vm="using:RestaurantSimulator.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
         x:Class="RestaurantSimulator.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
-        Icon="/Assets/avalonia-logo.ico"
-        Title="RestaurantSimulator">
+        Title="Restaurant Simulator">
 
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
@@ -15,6 +14,79 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-
+    <Grid RowDefinitions="Auto,*,Auto" ColumnDefinitions="*,Auto">
+        <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" 
+                    Orientation="Horizontal" 
+                    Spacing="10"
+                    Margin="10">
+            <TextBlock Text="Restaurant Simulator"
+                       FontSize="24"
+                       FontWeight="Bold"/>
+            
+            <Button Content="{Binding IsSimulationRunning, Converter={StaticResource BoolToStartStopConverter}}"
+                    Command="{Binding ToggleSimulationCommand}"
+                    Width="100"/>
+        </StackPanel>
+        
+        <Grid Grid.Row="1" Grid.Column="0" Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            
+            <TextBlock Text="Kitchen Stations"
+                       FontSize="18"
+                       FontWeight="Bold"
+                       Margin="0,0,0,10"/>
+            
+            <ItemsControl Grid.Row="1"
+                         ItemsSource="{Binding KitchenStations}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <ContentControl Content="{Binding}"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Grid>
+        
+        <Grid Grid.Row="1" Grid.Column="1" Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            
+            <TextBlock Text="Available Recipes"
+                       FontSize="18"
+                       FontWeight="Bold"
+                       Margin="0,0,0,10"/>
+            
+            <ListBox Grid.Row="1"
+                     ItemsSource="{Binding AvailableRecipes}"
+                     Width="300">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Spacing="5">
+                            <TextBlock Text="{Binding Name}"
+                                       FontSize="16"/>
+                            <TextBlock Text="{Binding Difficulty}"
+                                       FontSize="14"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+        
+        <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" 
+              Background="{DynamicResource ThemeBackgroundBrush}"
+              Height="30">
+            <TextBlock Text="{Binding IsSimulationRunning, Converter={StaticResource BoolToStatusConverter}}"
+                       VerticalAlignment="Center"
+                       Margin="10,0"/>
+        </Grid>
+    </Grid>
 </Window>
