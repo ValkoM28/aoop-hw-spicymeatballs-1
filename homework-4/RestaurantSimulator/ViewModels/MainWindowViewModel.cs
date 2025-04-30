@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using RestaurantSimulator.Models;
+using RestaurantSimulator.Services;
+using RestaurantSimulator.Utilities;
 
 namespace RestaurantSimulator.ViewModels;
 
@@ -18,6 +20,9 @@ public partial class MainWindowViewModel : ViewModelBase
 
     [ObservableProperty]
     private bool _isSimulationRunning;
+
+    private readonly DataProviderService _dataProviderService;
+    private readonly JsonDataService _jsonDataService;
 
     [RelayCommand]
     private async Task ToggleSimulation()
@@ -34,6 +39,9 @@ public partial class MainWindowViewModel : ViewModelBase
 
     public MainWindowViewModel()
     {
+        _jsonDataService = new JsonDataService(Constants.JsonFilePath);
+        _dataProviderService = new DataProviderService(_jsonDataService);
+        
         InitializeKitchenStations();
         LoadRecipes();
     }
@@ -62,24 +70,23 @@ public partial class MainWindowViewModel : ViewModelBase
         }));
     }
 
-    private void LoadRecipes()
+    private async void LoadRecipes()
     {
-        // This will be replaced with actual JSON loading
-        var recipe = new Recipe
+        try
         {
-            Name = "Margherita Pizza",
-            Difficulty = "Medium",
-            Equipment = new List<string> { "Oven", "Rolling Pin", "Mixing Bowl" },
-            Steps = new List<RecipeStep>
+            await _dataProviderService.LoadRecipesAsync();
+            var recipes = _dataProviderService.GetAllRecipes();
+            AvailableRecipes.Clear();
+            foreach (var recipe in recipes)
             {
-                new() { Step = "Preheat the oven", Duration = 5 },
-                new() { Step = "Prepare the dough", Duration = 15 },
-                new() { Step = "Spread tomato sauce", Duration = 5 },
-                new() { Step = "Add cheese and basil", Duration = 3 },
-                new() { Step = "Bake the pizza", Duration = 15 }
+                AvailableRecipes.Add(recipe);
             }
-        };
-        AvailableRecipes.Add(recipe);
+        }
+        catch (Exception ex)
+        {
+            // TODO: Add proper error handling and logging
+            Console.WriteLine($"Error loading recipes: {ex.Message}");
+        }
     }
 
     public async Task StartSimulation()
