@@ -33,6 +33,12 @@
                     <ProgressBar Value="{Binding CurrentRecipeViewModel.StepProgress}"
                                 Maximum="100"
                                 Height="10"/>
+                    <TextBlock Text="{Binding CurrentRecipeViewModel.Recipe.ProgressPercentage, StringFormat='Overall Progress: {0:F1}%'}"
+                               FontSize="12"
+                               HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding CurrentRecipeViewModel.RemainingTime, StringFormat='Time Remaining: {0}'}"
+                               FontSize="12"
+                               HorizontalAlignment="Center"/>
                 </StackPanel>
             </Grid>
             

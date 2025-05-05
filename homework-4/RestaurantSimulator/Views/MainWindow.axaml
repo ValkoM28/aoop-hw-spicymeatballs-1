@@ -51,12 +51,12 @@
                          ItemsSource="{Binding KitchenStations}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <WrapPanel/>
+                        <StackPanel Orientation="Vertical" Spacing="10"/>
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <views:KitchenStationView DataContext="{Binding}"/>
+                        <views:KitchenStationView DataContext="{Binding}" Width="400" Height="150"/>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

@@ -1,8 +1,10 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using RestaurantSimulator.Models;
+using RestaurantSimulator.Utilities;
 
 namespace RestaurantSimulator.ViewModels;
 
@@ -17,6 +19,9 @@ public partial class RecipeViewModel : ViewModelBase
     [ObservableProperty]
     private double _stepProgress;
 
+    [ObservableProperty]
+    private string _remainingTime = string.Empty;
+
     public RecipeViewModel(Recipe recipe)
     {
         _recipe = recipe;
@@ -25,24 +30,32 @@ public partial class RecipeViewModel : ViewModelBase
 
     public void UpdateProgress()
     {
-        if (Recipe.CurrentStepIndex < Recipe.Steps.Count)
+        Dispatcher.UIThread.Post(() =>
         {
-            var currentStep = Recipe.Steps[Recipe.CurrentStepIndex];
-            CurrentStepDescription = currentStep.Step;
+            if (Recipe.CurrentStepIndex < Recipe.Steps.Count)
+            {
+                var currentStep = Recipe.Steps[Recipe.CurrentStepIndex];
+                CurrentStepDescription = currentStep.Step;
+                
+                if (currentStep.StartTime.HasValue && !currentStep.IsCompleted)
+                {
+                    var elapsed = DateTime.Now - currentStep.StartTime.Value;
+                    var totalDuration = TimeSpan.FromSeconds(currentStep.Duration);
+                    StepProgress = Math.Min(100, (elapsed.TotalSeconds / totalDuration.TotalSeconds) * 100);
+                    
+                    // Calculate remaining time for current step
+                    var remaining = totalDuration - elapsed;
+                    RemainingTime = remaining.FormatDuration();
+                }
+                else if (currentStep.IsCompleted)
+                {
+                    StepProgress = 100;
+                    RemainingTime = "Completed";
+                }
+            }
             
-            if (currentStep.StartTime.HasValue && !currentStep.IsCompleted)
-            {
-                var elapsed = DateTime.Now - currentStep.StartTime.Value;
-                var totalDuration = TimeSpan.FromSeconds(currentStep.Duration);
-                StepProgress = Math.Min(100, (elapsed.TotalSeconds / totalDuration.TotalSeconds) * 100);
-            }
-            else if (currentStep.IsCompleted)
-            {
-                StepProgress = 100;
-            }
-        }
-        
-        OnPropertyChanged(nameof(Recipe.ProgressPercentage));
+            OnPropertyChanged(nameof(Recipe.ProgressPercentage));
+        });
     }
 
     public async Task StartPreparation()
@@ -63,6 +76,7 @@ public partial class RecipeViewModel : ViewModelBase
                 if (!Recipe.IsInProgress) return; // Check if preparation was cancelled
                 
                 StepProgress = (double)j / step.Duration * 100;
+                RemainingTime = TimeSpan.FromSeconds(step.Duration - j).FormatDuration();
                 await Task.Delay(1000); // Simulate 1 second per unit of duration
             }
             
@@ -73,6 +87,7 @@ public partial class RecipeViewModel : ViewModelBase
         
         Recipe.IsCompleted = true;
         Recipe.IsInProgress = false;
+        RemainingTime = "Completed";
     }
 
     private void UpdateCurrentStep()

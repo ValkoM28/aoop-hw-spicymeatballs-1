@@ -98,11 +98,20 @@ public class MealPreparationService
                     break;
 
                 step.StartTime = DateTime.Now;
-                await Task.Delay(step.Duration * 1000, cancellationToken);
+                
+                // Update progress more frequently
+                for (int i = 0; i < step.Duration; i++)
+                {
+                    if (cancellationToken.IsCancellationRequested)
+                        break;
+                        
+                    RecipeProgressUpdated?.Invoke(this, new RecipeProgressEventArgs(recipe));
+                    await Task.Delay(1000, cancellationToken);
+                }
+                
                 step.EndTime = DateTime.Now;
                 step.IsCompleted = true;
                 recipe.CurrentStepIndex++;
-
                 RecipeProgressUpdated?.Invoke(this, new RecipeProgressEventArgs(recipe));
             }
 
