@@ -1,0 +1,51 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:conv="using:RestaurantSimulator.Converters"
+             xmlns:vm="using:RestaurantSimulator.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="200"
+             x:Class="RestaurantSimulator.Views.KitchenStationView"
+             x:DataType="vm:KitchenStationViewModel">
+
+    <UserControl.Resources>
+        <conv:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </UserControl.Resources>
+
+    <Border BorderBrush="{DynamicResource ThemeBorderBrush}" 
+            BorderThickness="1" 
+            CornerRadius="4"
+            Margin="5"
+            Padding="10">
+        <Grid RowDefinitions="Auto,*,Auto">
+            <TextBlock Text="{Binding Station.Name}"
+                       FontSize="16"
+                       FontWeight="Bold"/>
+            
+            <Grid Grid.Row="1" 
+                  IsVisible="{Binding CurrentRecipeViewModel, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <StackPanel Spacing="5">
+                    <TextBlock Text="{Binding CurrentRecipeViewModel.Recipe.Name}"
+                               FontSize="14"
+                               FontWeight="SemiBold"/>
+                    <TextBlock Text="{Binding CurrentRecipeViewModel.CurrentStepDescription}"
+                               FontSize="12"/>
+                    <ProgressBar Value="{Binding CurrentRecipeViewModel.StepProgress}"
+                                Maximum="100"
+                                Height="10"/>
+                    <TextBlock Text="{Binding CurrentRecipeViewModel.Recipe.ProgressPercentage, StringFormat='Overall Progress: {0:F1}%'}"
+                               FontSize="12"
+                               HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding CurrentRecipeViewModel.RemainingTime, StringFormat='Time Remaining: {0}'}"
+                               FontSize="12"
+                               HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Grid>
+            
+            <TextBlock Grid.Row="2"
+                       Text="Available"
+                       IsVisible="{Binding Station.IsAvailable, Converter={StaticResource BooleanToVisibilityConverter}}"
+                       Foreground="Green"/>
+        </Grid>
+    </Border>
+</UserControl> 
