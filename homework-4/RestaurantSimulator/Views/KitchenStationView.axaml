@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:conv="using:RestaurantSimulator.Converters"
              xmlns:vm="using:RestaurantSimulator.ViewModels"
+             xmlns:views="clr-namespace:RestaurantSimulator.Views"
              mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="200"
              x:Class="RestaurantSimulator.Views.KitchenStationView"
              x:DataType="vm:KitchenStationViewModel">
@@ -28,30 +29,9 @@
             </StackPanel>
             
             <Grid Grid.Row="1" 
-                  IsVisible="{Binding CurrentRecipeViewModel, Converter={StaticResource BooleanToVisibilityConverter}}"
+                  IsVisible="True"
                   Margin="0,10">
-                <StackPanel Spacing="10">
-                    <TextBlock Text="{Binding CurrentRecipeViewModel.Recipe.Name}"
-                               FontSize="18"
-                               FontWeight="SemiBold"/>
-                    <TextBlock Text="{Binding CurrentRecipeViewModel.CurrentStepDescription}"
-                               FontSize="16"
-                               TextWrapping="Wrap"/>
-                    <ProgressBar Value="{Binding CurrentRecipeViewModel.StepProgress}"
-                                Maximum="100"
-                                Height="15"
-                                Margin="0,5"/>
-                    <Grid ColumnDefinitions="*,*" Margin="0,5">
-                        <StackPanel Grid.Column="0" Spacing="5">
-                            <TextBlock Text="{Binding CurrentRecipeViewModel.Recipe.ProgressPercentage, StringFormat='Overall Progress: {0:F1}%'}"
-                                       FontSize="14"
-                                       HorizontalAlignment="Left"/>
-                            <TextBlock Text="{Binding CurrentRecipeViewModel.RemainingTime, StringFormat='Time Remaining: {0}'}"
-                                       FontSize="14"
-                                       HorizontalAlignment="Left"/>
-                        </StackPanel>
-                    </Grid>
-                </StackPanel>
+                <views:RecipeView DataContext="{Binding CurrentRecipeViewModel}" Width="200" Height="100"/>
             </Grid>
             
             <TextBlock Grid.Row="2"

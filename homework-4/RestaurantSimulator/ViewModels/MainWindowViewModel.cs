@@ -34,19 +34,23 @@ public partial class MainWindowViewModel : ViewModelBase
         }
         else
         {
-            await StartSimulation();
+            await Task.Run(StartSimulation);
         }
     }
 
     [RelayCommand]
     private void AddRecipeToQueue(Recipe recipe)
     {
-        Console.WriteLine($"AddRecipeToQueue called for recipe: {recipe?.Name}"); // Debug log
+        Console.WriteLine($"[MainWindowViewModel] AddRecipeToQueue called for recipe: {recipe?.Name}");
         if (recipe != null && !recipe.IsInProgress && !recipe.IsCompleted)
         {
-            Console.WriteLine($"Adding recipe {recipe.Name} to queue"); // Debug log
+            Console.WriteLine($"[MainWindowViewModel] Adding recipe {recipe.Name} to queue");
             _mealPreparationService.AddRecipe(recipe);
             recipe.IsInProgress = true;
+        }
+        else
+        {
+            Console.WriteLine($"[MainWindowViewModel] Cannot add recipe {recipe?.Name} - InProgress: {recipe?.IsInProgress}, Completed: {recipe?.IsCompleted}");
         }
     }
 
@@ -63,6 +67,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
     private void SubscribeToMealServiceEvents()
     {
+        Console.WriteLine("[MainWindowViewModel] Subscribing to meal service events");
         _mealPreparationService.RecipeProgressUpdated += OnRecipeProgressUpdated;
         _mealPreparationService.RecipeCompleted += OnRecipeCompleted;
     }
@@ -70,34 +75,69 @@ public partial class MainWindowViewModel : ViewModelBase
     private void OnRecipeProgressUpdated(object? sender, RecipeProgressEventArgs e)
     {
         var recipe = e.Recipe;
-        var station = KitchenStations.FirstOrDefault(s => s.KitchenStation.CurrentRecipe == recipe);
-        if (station != null)
+        Console.WriteLine($"[MainWindowViewModel] Recipe progress updated: {recipe.Name}");
+        
+        var stationModel = _mealPreparationService.KitchenStations.FirstOrDefault(st => st.CurrentRecipe == recipe);
+        if (stationModel != null)
         {
-            station.UpdateProgress();
+            Console.WriteLine($"[MainWindowViewModel] Found station model: {stationModel.Name}");
+            var stationVM = KitchenStations.FirstOrDefault(vm => vm.KitchenStation.Id == stationModel.Id);
+            if (stationVM != null)
+            {
+                Console.WriteLine($"[MainWindowViewModel] Found station view model: {stationVM.Station.Name}, updating progress");
+                stationVM.UpdateProgress();
+            }
+            else
+            {
+                Console.WriteLine($"[MainWindowViewModel] Could not find station view model for station {stationModel.Name}");
+            }
+        }
+        else
+        {
+            Console.WriteLine($"[MainWindowViewModel] Could not find station model for recipe {recipe.Name}");
         }
     }
 
     private void OnRecipeCompleted(object? sender, RecipeEventArgs e)
     {
         var recipe = e.Recipe;
-        var station = KitchenStations.FirstOrDefault(s => s.KitchenStation.CurrentRecipe == recipe);
-        if (station != null)
+        Console.WriteLine($"[MainWindowViewModel] Recipe completed: {recipe.Name}");
+        
+        var stationModel = _mealPreparationService.KitchenStations.FirstOrDefault(st => st.CurrentRecipe == recipe);
+        if (stationModel != null)
         {
-            station.ClearCurrentRecipe();
+            Console.WriteLine($"[MainWindowViewModel] Found station model: {stationModel.Name}");
+            var stationVM = KitchenStations.FirstOrDefault(vm => vm.KitchenStation.Id == stationModel.Id);
+            if (stationVM != null)
+            {
+                Console.WriteLine($"[MainWindowViewModel] Found station view model: {stationVM.Station.Name}, clearing recipe");
+                stationVM.ClearCurrentRecipe();
+            }
+            else
+            {
+                Console.WriteLine($"[MainWindowViewModel] Could not find station view model for station {stationModel.Name}");
+            }
+        }
+        else
+        {
+            Console.WriteLine($"[MainWindowViewModel] Could not find station model for recipe {recipe.Name}");
         }
     }
 
     private void InitializeKitchenStationsViewModels()
     {
+        Console.WriteLine("[MainWindowViewModel] Initializing kitchen station view models");
         var kitchenStations = _mealPreparationService.KitchenStations;
         foreach (var station in kitchenStations)
         {
+            Console.WriteLine($"[MainWindowViewModel] Creating view model for station {station.Name}");
             KitchenStations.Add(new KitchenStationViewModel(station));
         }
     }
 
     private async void LoadRecipes()
     {
+        Console.WriteLine("[MainWindowViewModel] Loading recipes");
         try
         {
             await _dataProviderService.LoadRecipesAsync();
@@ -105,27 +145,30 @@ public partial class MainWindowViewModel : ViewModelBase
             AvailableRecipes.Clear();
             foreach (var recipe in recipes)
             {
+                Console.WriteLine($"[MainWindowViewModel] Adding recipe to available recipes: {recipe.Name}");
                 AvailableRecipes.Add(new RecipeItemViewModel(recipe, AddRecipeToQueueCommand));
             }
         }
         catch (Exception ex)
         {
-            // TODO: Add proper error handling and logging
-            Console.WriteLine($"Error loading recipes: {ex.Message}");
+            Console.WriteLine($"[MainWindowViewModel] Error loading recipes: {ex.Message}");
         }
     }
 
     public async Task StartSimulation()
     {
+        Console.WriteLine("[MainWindowViewModel] Starting simulation");
         IsSimulationRunning = true;
         ResetAllRecipes();
     }
 
     private void ResetAllRecipes()
     {
+        Console.WriteLine("[MainWindowViewModel] Resetting all recipes");
         foreach (var recipeViewModel in AvailableRecipes)
         {
             var recipe = recipeViewModel.Recipe;
+            Console.WriteLine($"[MainWindowViewModel] Resetting recipe: {recipe.Name}");
             recipe.IsInProgress = false;
             recipe.IsCompleted = false;
             recipe.CurrentStepIndex = 0;
@@ -140,11 +183,13 @@ public partial class MainWindowViewModel : ViewModelBase
 
     public void StopSimulation()
     {
+        Console.WriteLine("[MainWindowViewModel] Stopping simulation");
         IsSimulationRunning = false;
         _mealPreparationService.StopProcessing();
         
         foreach (var station in KitchenStations)
         {
+            Console.WriteLine($"[MainWindowViewModel] Clearing recipe from station: {station.Station.Name}");
             station.ClearCurrentRecipe();
         }
     }

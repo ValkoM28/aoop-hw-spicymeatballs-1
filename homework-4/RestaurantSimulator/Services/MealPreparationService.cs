@@ -40,13 +40,16 @@ public class MealPreparationService
 
     public void AddRecipe(Recipe recipe)
     {
+        Console.WriteLine($"[MealPreparationService] Adding recipe: {recipe?.Name}");
         if (recipe.IsInProgress || recipe.IsCompleted)
         {
+            Console.WriteLine($"[MealPreparationService] Recipe {recipe.Name} is already in progress or completed");
             RecipeError?.Invoke(this, new RecipeErrorEventArgs(recipe, "Recipe is already in progress or completed"));
             return;
         }
 
         _recipeQueue.Enqueue(recipe);
+        Console.WriteLine($"[MealPreparationService] Recipe {recipe.Name} added to queue");
         StartProcessing();
     }
 
@@ -108,9 +111,11 @@ public class MealPreparationService
 
     private async Task ProcessRecipeAtStationAsync(KitchenStation station, Recipe recipe, CancellationToken cancellationToken)
     {
+        Console.WriteLine($"[MealPreparationService] Starting to process recipe {recipe.Name} at station {station.Name}");
         try
         {
             station.CurrentRecipe = recipe;
+            Console.WriteLine($"[MealPreparationService] Assigned recipe {recipe.Name} to station {station.Name}");
             recipe.IsInProgress = true;
 
             foreach (var step in recipe.Steps)
@@ -119,38 +124,52 @@ public class MealPreparationService
                     break;
 
                 step.StartTime = DateTime.Now;
+                Console.WriteLine($"[MealPreparationService] Starting step: {step.Step} for recipe {recipe.Name}");
                 
-                for (int i = 0; i < step.Duration; i++)
+                // Trigger initial progress update
+                RecipeProgressUpdated?.Invoke(this, new RecipeProgressEventArgs(recipe));
+                
+                // Create a timer to update progress more frequently
+                using var timer = new System.Timers.Timer(100); // Update every 100ms
+                timer.Elapsed += (s, e) => RecipeProgressUpdated?.Invoke(this, new RecipeProgressEventArgs(recipe));
+                timer.Start();
+                
+                try
                 {
-                    if (cancellationToken.IsCancellationRequested)
-                        break;
-                        
-                    RecipeProgressUpdated?.Invoke(this, new RecipeProgressEventArgs(recipe));
-                    await Task.Delay(1000, cancellationToken);
+                    await Task.Delay(TimeSpan.FromSeconds(step.Duration), cancellationToken);
+                }
+                finally
+                {
+                    timer.Stop();
                 }
                 
                 step.EndTime = DateTime.Now;
                 step.IsCompleted = true;
                 recipe.CurrentStepIndex++;
+                Console.WriteLine($"[MealPreparationService] Completed step {recipe.CurrentStepIndex} for recipe {recipe.Name}");
                 RecipeProgressUpdated?.Invoke(this, new RecipeProgressEventArgs(recipe));
             }
 
             recipe.IsCompleted = true;
             recipe.IsInProgress = false;
+            Console.WriteLine($"[MealPreparationService] Completed recipe {recipe.Name}");
             RecipeCompleted?.Invoke(this, new RecipeEventArgs(recipe));
         }
         catch (OperationCanceledException)
         {
+            Console.WriteLine($"[MealPreparationService] Recipe {recipe.Name} was cancelled");
             recipe.IsInProgress = false;
             RecipeError?.Invoke(this, new RecipeErrorEventArgs(recipe, "Recipe preparation was cancelled"));
         }
         catch (Exception ex)
         {
+            Console.WriteLine($"[MealPreparationService] Error processing recipe {recipe.Name}: {ex.Message}");
             recipe.IsInProgress = false;
             RecipeError?.Invoke(this, new RecipeErrorEventArgs(recipe, $"Error during recipe preparation: {ex.Message}"));
         }
         finally
         {
+            Console.WriteLine($"[MealPreparationService] Clearing recipe {recipe.Name} from station {station.Name}");
             station.CurrentRecipe = null;
             _activeRecipes.Remove(recipe);
             _stationSemaphore.Release();
