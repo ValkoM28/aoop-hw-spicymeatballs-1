@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using System.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using RestaurantSimulator.Models;
 
@@ -13,6 +14,8 @@ public partial class KitchenStationViewModel : ViewModelBase
     [ObservableProperty]
     private RecipeViewModel? _currentRecipeViewModel;
 
+    private readonly SemaphoreSlim _recipeLock = new SemaphoreSlim(1, 1);
+
     public KitchenStationViewModel(KitchenStation station)
     {
         _station = station;
@@ -21,16 +24,23 @@ public partial class KitchenStationViewModel : ViewModelBase
         {
             if (e.PropertyName == nameof(KitchenStation.CurrentRecipe))
             {
-                if (station.CurrentRecipe != null)
-                {
-                    CurrentRecipeViewModel = new RecipeViewModel(station.CurrentRecipe);
-                }
-                else
-                {
-                    CurrentRecipeViewModel = null;
-                }
+                UpdateCurrentRecipeViewModel();
             }
         };
+    }
+
+    private void UpdateCurrentRecipeViewModel()
+    {
+        if (Station.CurrentRecipe != null)
+        {
+            CurrentRecipeViewModel = new RecipeViewModel(Station.CurrentRecipe);
+            OnPropertyChanged(nameof(CurrentRecipeViewModel));
+        }
+        else
+        {
+            CurrentRecipeViewModel = null;
+            OnPropertyChanged(nameof(CurrentRecipeViewModel));
+        }
     }
 
     public KitchenStation KitchenStation => Station;
@@ -43,20 +53,53 @@ public partial class KitchenStationViewModel : ViewModelBase
         }
     }
 
-    public void ClearCurrentRecipe()
+    public async Task ClearCurrentRecipe()
     {
-        Station.CurrentRecipe = null;
-        CurrentRecipeViewModel = null;
+        await _recipeLock.WaitAsync();
+        try
+        {
+            if (CurrentRecipeViewModel != null)
+            {
+                await CurrentRecipeViewModel.CancelPreparation();
+            }
+            Station.CurrentRecipe = null;
+            CurrentRecipeViewModel = null;
+        }
+        finally
+        {
+            _recipeLock.Release();
+        }
     }
 
     public async Task AssignRecipe(Recipe recipe)
     {
-        if (!Station.IsAvailable) return;
+        await _recipeLock.WaitAsync();
+        try
+        {
+            if (!Station.IsAvailable)
+            {
+                throw new InvalidOperationException("Station is not available");
+            }
 
-        Station.CurrentRecipe = recipe;
-        CurrentRecipeViewModel = new RecipeViewModel(recipe);
-        await CurrentRecipeViewModel.StartPreparation();
-        Station.CurrentRecipe = null;
-        CurrentRecipeViewModel = null;
+            if (recipe.IsInProgress)
+            {
+                throw new InvalidOperationException("Recipe is already in progress");
+            }
+
+            Station.CurrentRecipe = recipe;
+            CurrentRecipeViewModel = new RecipeViewModel(recipe);
+            await CurrentRecipeViewModel.StartPreparation();
+            
+            // Only clear if the recipe completed successfully
+            if (recipe.IsCompleted)
+            {
+                Station.CurrentRecipe = null;
+                CurrentRecipeViewModel = null;
+            }
+        }
+        finally
+        {
+            _recipeLock.Release();
+        }
     }
 } 

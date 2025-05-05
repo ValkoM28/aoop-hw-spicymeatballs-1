@@ -13,11 +13,12 @@ public class MealPreparationService
     private readonly SemaphoreSlim _stationSemaphore;
     private readonly object _lockObject = new();
     private CancellationTokenSource? _cancellationTokenSource;
-
+    private readonly Dictionary<Recipe, KitchenStation> _activeRecipes = new();
 
     public List<KitchenStation> KitchenStations { get; private set; } = [];
     public event EventHandler<RecipeProgressEventArgs>? RecipeProgressUpdated;
     public event EventHandler<RecipeEventArgs>? RecipeCompleted;
+    public event EventHandler<RecipeErrorEventArgs>? RecipeError;
 
     public MealPreparationService(int numberOfStations)
     {
@@ -39,6 +40,12 @@ public class MealPreparationService
 
     public void AddRecipe(Recipe recipe)
     {
+        if (recipe.IsInProgress || recipe.IsCompleted)
+        {
+            RecipeError?.Invoke(this, new RecipeErrorEventArgs(recipe, "Recipe is already in progress or completed"));
+            return;
+        }
+
         _recipeQueue.Enqueue(recipe);
         StartProcessing();
     }
@@ -56,23 +63,37 @@ public class MealPreparationService
     {
         while (!cancellationToken.IsCancellationRequested)
         {
-            if (_recipeQueue.TryDequeue(out var recipe))
+            try
             {
-                await _stationSemaphore.WaitAsync(cancellationToken);
-                var station = GetAvailableStation();
-                if (station != null)
+                if (_recipeQueue.TryDequeue(out var recipe))
                 {
-                    _ = ProcessRecipeAtStationAsync(station, recipe, cancellationToken);
+                    await _stationSemaphore.WaitAsync(cancellationToken);
+                    var station = GetAvailableStation();
+                    if (station != null)
+                    {
+                        _activeRecipes[recipe] = station;
+                        _ = ProcessRecipeAtStationAsync(station, recipe, cancellationToken);
+                    }
+                    else
+                    {
+                        _stationSemaphore.Release();
+                        _recipeQueue.Enqueue(recipe);
+                        await Task.Delay(1000, cancellationToken); // Wait before retrying
+                    }
                 }
                 else
                 {
-                    _stationSemaphore.Release();
-                    _recipeQueue.Enqueue(recipe);
+                    await Task.Delay(100, cancellationToken);
                 }
             }
-            else
+            catch (OperationCanceledException)
             {
-                await Task.Delay(100, cancellationToken);
+                break;
+            }
+            catch (Exception ex)
+            {
+                RecipeError?.Invoke(this, new RecipeErrorEventArgs(null, $"Error processing recipe: {ex.Message}"));
+                await Task.Delay(1000, cancellationToken); // Wait before retrying
             }
         }
     }
@@ -99,7 +120,6 @@ public class MealPreparationService
 
                 step.StartTime = DateTime.Now;
                 
-                // Update progress more frequently
                 for (int i = 0; i < step.Duration; i++)
                 {
                     if (cancellationToken.IsCancellationRequested)
@@ -119,9 +139,20 @@ public class MealPreparationService
             recipe.IsInProgress = false;
             RecipeCompleted?.Invoke(this, new RecipeEventArgs(recipe));
         }
+        catch (OperationCanceledException)
+        {
+            recipe.IsInProgress = false;
+            RecipeError?.Invoke(this, new RecipeErrorEventArgs(recipe, "Recipe preparation was cancelled"));
+        }
+        catch (Exception ex)
+        {
+            recipe.IsInProgress = false;
+            RecipeError?.Invoke(this, new RecipeErrorEventArgs(recipe, $"Error during recipe preparation: {ex.Message}"));
+        }
         finally
         {
             station.CurrentRecipe = null;
+            _activeRecipes.Remove(recipe);
             _stationSemaphore.Release();
         }
     }
@@ -130,6 +161,14 @@ public class MealPreparationService
     {
         _cancellationTokenSource?.Cancel();
         _cancellationTokenSource = null;
+        
+        // Clear all active recipes
+        foreach (var recipe in _activeRecipes.Keys)
+        {
+            recipe.IsInProgress = false;
+            recipe.IsCompleted = false;
+        }
+        _activeRecipes.Clear();
     }
 }
 
@@ -150,5 +189,17 @@ public class RecipeEventArgs : EventArgs
     public RecipeEventArgs(Recipe recipe)
     {
         Recipe = recipe;
+    }
+}
+
+public class RecipeErrorEventArgs : EventArgs
+{
+    public Recipe? Recipe { get; }
+    public string ErrorMessage { get; }
+
+    public RecipeErrorEventArgs(Recipe? recipe, string errorMessage)
+    {
+        Recipe = recipe;
+        ErrorMessage = errorMessage;
     }
 } 

@@ -7,7 +7,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using RestaurantSimulator.Models;
 using RestaurantSimulator.Services;
-using RestaurantSimulator.Utilities;
 
 namespace RestaurantSimulator.ViewModels;
 
@@ -53,7 +52,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
     public MainWindowViewModel()
     {
-        _jsonDataService = new JsonDataService(Constants.JsonFilePath);
+        _jsonDataService = new JsonDataService("ExerciseJSON.json");
         _dataProviderService = new DataProviderService(_jsonDataService);
         _mealPreparationService = new MealPreparationService(3); // Initialize with 3 stations
         

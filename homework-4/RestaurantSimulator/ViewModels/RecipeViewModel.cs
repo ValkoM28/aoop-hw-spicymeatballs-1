@@ -1,10 +1,10 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using System.Threading;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using RestaurantSimulator.Models;
-using RestaurantSimulator.Utilities;
 
 namespace RestaurantSimulator.ViewModels;
 
@@ -22,6 +22,9 @@ public partial class RecipeViewModel : ViewModelBase
     [ObservableProperty]
     private string _remainingTime = string.Empty;
 
+    private CancellationTokenSource? _cancellationTokenSource;
+    private readonly object _progressLock = new object();
+
     public RecipeViewModel(Recipe recipe)
     {
         _recipe = recipe;
@@ -30,64 +33,97 @@ public partial class RecipeViewModel : ViewModelBase
 
     public void UpdateProgress()
     {
-        Dispatcher.UIThread.Post(() =>
+        lock (_progressLock)
         {
-            if (Recipe.CurrentStepIndex < Recipe.Steps.Count)
+            Dispatcher.UIThread.Post(() =>
             {
-                var currentStep = Recipe.Steps[Recipe.CurrentStepIndex];
-                CurrentStepDescription = currentStep.Step;
-                
-                if (currentStep.StartTime.HasValue && !currentStep.IsCompleted)
+                if (Recipe.CurrentStepIndex < Recipe.Steps.Count)
                 {
-                    var elapsed = DateTime.Now - currentStep.StartTime.Value;
-                    var totalDuration = TimeSpan.FromSeconds(currentStep.Duration);
-                    StepProgress = Math.Min(100, (elapsed.TotalSeconds / totalDuration.TotalSeconds) * 100);
+                    var currentStep = Recipe.Steps[Recipe.CurrentStepIndex];
+                    CurrentStepDescription = currentStep.Step;
                     
-                    // Calculate remaining time for current step
-                    var remaining = totalDuration - elapsed;
-                    RemainingTime = remaining.FormatDuration();
+                    if (currentStep.StartTime.HasValue && !currentStep.IsCompleted)
+                    {
+                        var elapsed = DateTime.Now - currentStep.StartTime.Value;
+                        var totalDuration = TimeSpan.FromSeconds(currentStep.Duration);
+                        StepProgress = Math.Min(100, (elapsed.TotalSeconds / totalDuration.TotalSeconds) * 100);
+                        
+                        var remaining = totalDuration - elapsed;
+                        RemainingTime = remaining.ToString(@"mm\:ss");
+                    }
+                    else if (currentStep.IsCompleted)
+                    {
+                        StepProgress = 100;
+                        RemainingTime = "Completed";
+                    }
                 }
-                else if (currentStep.IsCompleted)
-                {
-                    StepProgress = 100;
-                    RemainingTime = "Completed";
-                }
-            }
-            
-            OnPropertyChanged(nameof(Recipe.ProgressPercentage));
-        });
+                
+                OnPropertyChanged(nameof(Recipe.ProgressPercentage));
+            });
+        }
     }
 
     public async Task StartPreparation()
     {
         if (Recipe.IsInProgress) return;
         
+        _cancellationTokenSource = new CancellationTokenSource();
         Recipe.IsInProgress = true;
         
-        for (int i = 0; i < Recipe.Steps.Count; i++)
+        try
         {
-            Recipe.CurrentStepIndex = i;
-            var step = Recipe.Steps[i];
-            step.StartTime = DateTime.Now;
-            CurrentStepDescription = step.Step;
-            
-            for (int j = 0; j < step.Duration; j++)
+            for (int i = 0; i < Recipe.Steps.Count; i++)
             {
-                if (!Recipe.IsInProgress) return; // Check if preparation was cancelled
+                if (_cancellationTokenSource.Token.IsCancellationRequested)
+                {
+                    Recipe.IsInProgress = false;
+                    return;
+                }
+
+                Recipe.CurrentStepIndex = i;
+                var step = Recipe.Steps[i];
+                step.StartTime = DateTime.Now;
+                CurrentStepDescription = step.Step;
                 
-                StepProgress = (double)j / step.Duration * 100;
-                RemainingTime = TimeSpan.FromSeconds(step.Duration - j).FormatDuration();
-                await Task.Delay(1000); // Simulate 1 second per unit of duration
+                for (int j = 0; j < step.Duration; j++)
+                {
+                    if (_cancellationTokenSource.Token.IsCancellationRequested)
+                    {
+                        Recipe.IsInProgress = false;
+                        return;
+                    }
+                    
+                    StepProgress = (double)j / step.Duration * 100;
+                    RemainingTime = TimeSpan.FromSeconds(step.Duration - j).ToString(@"mm\:ss");
+                    await Task.Delay(1000, _cancellationTokenSource.Token);
+                }
+                
+                step.EndTime = DateTime.Now;
+                step.IsCompleted = true;
+                OnPropertyChanged(nameof(Recipe.ProgressPercentage));
             }
             
-            step.EndTime = DateTime.Now;
-            step.IsCompleted = true;
-            OnPropertyChanged(nameof(Recipe.ProgressPercentage));
+            Recipe.IsCompleted = true;
+            Recipe.IsInProgress = false;
+            RemainingTime = "Completed";
         }
-        
-        Recipe.IsCompleted = true;
+        catch (OperationCanceledException)
+        {
+            Recipe.IsInProgress = false;
+            RemainingTime = "Cancelled";
+        }
+        finally
+        {
+            _cancellationTokenSource?.Dispose();
+            _cancellationTokenSource = null;
+        }
+    }
+
+    public async Task CancelPreparation()
+    {
+        _cancellationTokenSource?.Cancel();
         Recipe.IsInProgress = false;
-        RemainingTime = "Completed";
+        RemainingTime = "Cancelled";
     }
 
     private void UpdateCurrentStep()
