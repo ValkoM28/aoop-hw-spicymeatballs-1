@@ -3,7 +3,10 @@
   <component name="AvaloniaProject">
     <option name="projectPerEditor">
       <map>
+        <entry key="RestaurantSimulator/Views/KitchenStationView.axaml" value="RestaurantSimulator/RestaurantSimulator.csproj" />
         <entry key="RestaurantSimulator/Views/MainWindow.axaml" value="RestaurantSimulator/RestaurantSimulator.csproj" />
+        <entry key="RestaurantSimulator/Views/RecipeItemView.axaml" value="RestaurantSimulator/RestaurantSimulator.csproj" />
+        <entry key="RestaurantSimulator/Views/RecipeView.axaml" value="RestaurantSimulator/RestaurantSimulator.csproj" />
       </map>
     </option>
   </component>
