@@ -3,9 +3,14 @@
         xmlns:vm="using:RestaurantSimulator.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:conv="using:RestaurantSimulator.Converters"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="RestaurantSimulator.Views.RecipeView"
         x:DataType="vm:RecipeViewModel">
+
+    <UserControl.Resources>
+        <conv:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </UserControl.Resources>
 
     <Grid RowDefinitions="Auto,*,Auto" Margin="10">
         <TextBlock Text="{Binding Recipe.Name}" 
@@ -26,12 +31,24 @@
                        HorizontalAlignment="Center"/>
         </StackPanel>
         
-        <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="10">
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
             <TextBlock Text="{Binding Recipe.Difficulty}"
-                       FontSize="14"/>
+                       FontSize="14"
+                       VerticalAlignment="Center"/>
             
             <TextBlock Text="{Binding Recipe.IsInProgress, Converter={StaticResource BoolToStatusConverter}}"
-                       FontSize="14"/>
+                       FontSize="14"
+                       VerticalAlignment="Center"/>
+            
+            <Button Content="{Binding Recipe.IsPaused, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter='Resume|Pause'}"
+                    Command="{Binding PauseRecipeCommand}"
+                    IsVisible="{Binding Recipe.IsInProgress}"
+                    Width="80"/>
+            
+            <Button Content="Stop"
+                    Command="{Binding StopRecipeCommand}"
+                    IsVisible="{Binding Recipe.IsInProgress}"
+                    Width="80"/>
         </StackPanel>
     </Grid>
 </UserControl> 

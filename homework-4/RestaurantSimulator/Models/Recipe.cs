@@ -9,6 +9,7 @@ public class Recipe : INotifyPropertyChanged
 {
     private bool _isInProgress;
     private bool _isCompleted;
+    private bool _isPaused;
     private int _currentStepIndex;
 
     public string Name { get; set; } = string.Empty;
@@ -42,6 +43,20 @@ public class Recipe : INotifyPropertyChanged
             }
         }
     }
+
+    public bool IsPaused 
+    {
+        get => _isPaused;
+        set 
+        {
+            if (_isPaused != value)
+            {
+                _isPaused = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
 
     public int CurrentStepIndex
     {

@@ -14,8 +14,6 @@ public partial class KitchenStationViewModel : ViewModelBase
 
     [ObservableProperty]
     private RecipeViewModel? _currentRecipeViewModel;
-    
-    
 
     private readonly SemaphoreSlim _recipeLock = new SemaphoreSlim(1, 1);
 
