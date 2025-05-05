@@ -38,6 +38,7 @@ public class Recipe : INotifyPropertyChanged
             {
                 _isCompleted = value;
                 OnPropertyChanged();
+                _isCompleted = false;
             }
         }
     }
@@ -64,4 +65,9 @@ public class Recipe : INotifyPropertyChanged
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
-} 
+
+    public Recipe Clone() { 
+        return (Recipe)MemberwiseClone(); 
+    }
+
+}

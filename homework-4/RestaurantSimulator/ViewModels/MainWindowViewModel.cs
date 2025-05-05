@@ -41,16 +41,17 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private void AddRecipeToQueue(Recipe recipe)
     {
-        Console.WriteLine($"[MainWindowViewModel] AddRecipeToQueue called for recipe: {recipe?.Name}");
-        if (recipe != null && !recipe.IsInProgress && !recipe.IsCompleted)
+        var recipeReal = recipe.Clone();
+        Console.WriteLine($"[MainWindowViewModel] AddRecipeToQueue called for recipe: {recipeReal?.Name}");
+        if (recipe != null && !recipeReal.IsInProgress && !recipeReal.IsCompleted)
         {
-            Console.WriteLine($"[MainWindowViewModel] Adding recipe {recipe.Name} to queue");
-            _mealPreparationService.AddRecipe(recipe);
-            recipe.IsInProgress = true;
+            Console.WriteLine($"[MainWindowViewModel] Adding recipe {recipeReal.Name} to queue");
+            _mealPreparationService.AddRecipe(recipeReal);
+            recipeReal.IsInProgress = true;
         }
         else
         {
-            Console.WriteLine($"[MainWindowViewModel] Cannot add recipe {recipe?.Name} - InProgress: {recipe?.IsInProgress}, Completed: {recipe?.IsCompleted}");
+            Console.WriteLine($"[MainWindowViewModel] Cannot add recipe {recipeReal?.Name} - InProgress: {recipeReal?.IsInProgress}, Completed: {recipeReal?.IsCompleted}");
         }
     }
 
