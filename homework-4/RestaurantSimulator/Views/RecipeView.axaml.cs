@@ -1,8 +1,9 @@
 using Avalonia.Controls;
+using RestaurantSimulator.ViewModels;
 
 namespace RestaurantSimulator.Views
 {
-    public partial class RecipeView : Window
+    public partial class RecipeView : UserControl
     {
         public RecipeView()
         {
