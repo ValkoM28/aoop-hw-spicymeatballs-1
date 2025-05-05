@@ -10,9 +10,10 @@
 
     <UserControl.Resources>
         <conv:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <conv:BooleanToStringConverter x:Key="BooleanToStringConverter" TrueValue="Resume" FalseValue="Pause"/>
     </UserControl.Resources>
 
-    <Grid RowDefinitions="Auto,*,Auto" Margin="10">
+    <Grid RowDefinitions="Auto,Auto,Auto,*" Margin="10">
         <TextBlock Text="{Binding Recipe.Name}" 
                    FontSize="24" 
                    FontWeight="Bold"
@@ -31,16 +32,9 @@
                        HorizontalAlignment="Center"/>
         </StackPanel>
         
+
         <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
-            <TextBlock Text="{Binding Recipe.Difficulty}"
-                       FontSize="14"
-                       VerticalAlignment="Center"/>
-            
-            <TextBlock Text="{Binding Recipe.IsInProgress, Converter={StaticResource BoolToStatusConverter}}"
-                       FontSize="14"
-                       VerticalAlignment="Center"/>
-            
-            <Button Content="{Binding Recipe.IsPaused, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter='Resume|Pause'}"
+            <Button Content="{Binding Recipe.IsPaused, Converter={StaticResource BooleanToStringConverter}}"
                     Command="{Binding PauseRecipeCommand}"
                     IsVisible="{Binding Recipe.IsInProgress}"
                     Width="80"/>
@@ -50,5 +44,16 @@
                     IsVisible="{Binding Recipe.IsInProgress}"
                     Width="80"/>
         </StackPanel>
+
+        <StackPanel Grid.Row="3" Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
+            <TextBlock Text="{Binding Recipe.Difficulty}"
+                       FontSize="14"
+                       VerticalAlignment="Center"/>
+            
+            <TextBlock Text="{Binding Recipe.IsInProgress, Converter={StaticResource BoolToStatusConverter}}"
+                       FontSize="14"
+                       VerticalAlignment="Center"/>
+        </StackPanel>
+
     </Grid>
 </UserControl> 
