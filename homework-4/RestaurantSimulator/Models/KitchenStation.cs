@@ -8,6 +8,7 @@ public class KitchenStation : INotifyPropertyChanged
 {
     private Recipe? _currentRecipe;
     private bool _isActive;
+    private bool _isPaused;
 
     public int Id { get; set; }
     public string Name { get; set; } = string.Empty;
@@ -36,6 +37,19 @@ public class KitchenStation : INotifyPropertyChanged
             if (_isActive != value)
             {
                 _isActive = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    public bool IsPaused
+    {
+        get => _isPaused;
+        set
+        {
+            if (_isPaused != value)
+            {
+                _isPaused = value;
                 OnPropertyChanged();
             }
         }

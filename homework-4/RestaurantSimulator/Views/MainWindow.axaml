@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:conv="using:RestaurantSimulator.Converters"
         xmlns:views="using:RestaurantSimulator.Views"
-        mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
+        mc:Ignorable="d" d:DesignWidth="1920" d:DesignHeight="1080"
         x:Class="RestaurantSimulator.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         x:Name="MainWindowView"
@@ -31,7 +31,7 @@
                        FontSize="24"
                        FontWeight="Bold"/>
             
-            <Button Content="{Binding IsSimulationRunning, Converter={StaticResource BoolToStartStopConverter}}"
+            <Button Content="Reset (press multiple times :D)"
                     Command="{Binding ToggleSimulationCommand}"
                     Width="100"/>
         </StackPanel>
@@ -56,7 +56,7 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <views:KitchenStationView DataContext="{Binding}" Width="400" Height="150"/>
+                        <views:KitchenStationView DataContext="{Binding}" Width="600" Height="300"/>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
