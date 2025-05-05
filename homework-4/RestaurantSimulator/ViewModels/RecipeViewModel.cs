@@ -60,14 +60,7 @@ public partial class RecipeViewModel : ViewModelBase
         _cancellationTokenSource?.Cancel();
         Recipe.IsInProgress = false;
         Recipe.IsPaused = false;
-        Recipe.IsCompleted = false;
-        Recipe.CurrentStepIndex = 0;
-        foreach (var step in Recipe.Steps)
-        {
-            step.IsCompleted = false;
-            step.StartTime = null;
-            step.EndTime = null;
-        }
+        Recipe.IsCompleted = true;
     }
 
     public void UpdateProgress()

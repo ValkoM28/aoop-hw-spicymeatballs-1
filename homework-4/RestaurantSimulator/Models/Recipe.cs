@@ -39,7 +39,6 @@ public class Recipe : INotifyPropertyChanged
             {
                 _isCompleted = value;
                 OnPropertyChanged();
-                _isCompleted = false;
             }
         }
     }
